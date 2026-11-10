@@ -1,8 +1,24 @@
-# flutter_enterprise_sdk
+# Even Enterprise Sdk
 
 English | [简体中文](README.zh-CN.md)
 
-A Flutter plugin for connecting **enterprise-designated Even G2 glasses** on Android and iOS. The native Kotlin and Swift SDKs handle Bluetooth connections, license matching by serial number (SN), and device authorization.
+A Flutter-based SDK for building your own Android and iOS applications for **Even G2 glasses**. Native Kotlin and Swift SDKs are also available for direct integration. The native SDKs handle Bluetooth connections, device authorization, display commands, microphone audio, and firmware updates.
+
+## Get access
+
+The Enterprise SDK is currently in **alpha**, with access by application. To connect your application to glasses:
+
+1. Register or sign in at the [Even Hub portal](https://hub.evenrealities.com/).
+2. Open the [Enterprise tab](https://hub.evenrealities.com/hub?tab=enterprise) to apply for alpha access and find licensing and firmware details.
+3. After approval, follow the onboarding instructions to obtain device licenses and Enterprise-enabled firmware.
+
+## Choose your integration
+
+| Application | Install | Get started |
+| --- | --- | --- |
+| Flutter | Add `even_devices_native` as a Git dependency. | [Flutter setup](#install-flutter) |
+| Native Android | Add `mavenCentral()` and `implementation("com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14")` to your Gradle configuration. | [Kotlin integration](docs/NATIVE_SDK.md#android--maven-central) |
+| Native iOS | In Xcode, add [this repository](https://github.com/even-realities/flutter_enterprise_sdk.git) through Swift Package Manager; select exact version `0.1.0-beta.14` and product `EvenDevicesSDK`. | [Swift integration](docs/NATIVE_SDK.md#ios--swift-package-manager) |
 
 ## What's included
 
@@ -13,7 +29,7 @@ A Flutter plugin for connecting **enterprise-designated Even G2 glasses** on And
 
 Current scope: G2. See [supported capabilities and limits](docs/SCOPE.md).
 
-## Install
+## Install Flutter
 
 Add the plugin to your app's `pubspec.yaml`, then run `flutter pub get`:
 
@@ -22,10 +38,10 @@ dependencies:
   even_devices_native:
     git:
       url: https://github.com/even-realities/flutter_enterprise_sdk.git
-      ref: main
+      ref: ea53058edac83a6d7ecc6406593ab383c1f41e48
 ```
 
-Pin a reviewed commit instead of `main` for reproducible production builds.
+This pins the Flutter adapter to a reviewed commit. Both native SDK dependencies use `0.1.0-beta.14`.
 
 Enable Swift Package Manager before building iOS (required on the validated Flutter 3.32 toolchain):
 
@@ -115,10 +131,6 @@ await subscription.cancel();
 
 Connection and text-page calls submit requests; their results arrive through `sdk.events`. Use `executeEvenHubCommand` for other page and device interactions; see the [command contract](docs/evenhub_commands.json) and [integration reference](docs/INTEGRATION.zh-CN.md).
 
-## Native SDKs
-
-Both platforms pin native SDK **0.1.0-beta.14**. Android resolves `com.evenrealities.devices:even-devices-native-android` from Maven Central. iOS resolves **EvenDevicesSDK** from this repository through Swift Package Manager. See the [native integration guide](docs/NATIVE_SDK.md).
-
 ## Run the demo
 
 From the repository root, with a phone connected:
@@ -133,8 +145,6 @@ Open Settings, paste your License JSON, and initialize. Scan and select your gla
 
 ## Documentation
 
-Start with the **[Even Hub official documentation — Get Started / Overview](https://hub.evenrealities.com/docs/get-started/overview)** for Even Hub concepts, display and interaction guides, and the app development workflow. Use this repository's examples and integration reference for the Flutter connection APIs.
+Start with the **[Even Enterprise documentation](https://hub.evenrealities.com/docs/enterprise/)** (coming soon). Until it goes live, use this repository's [Flutter integration reference](docs/INTEGRATION.zh-CN.md), [native SDK guide](docs/NATIVE_SDK.md), and [example app](example/README.md).
 
 [Validation status](docs/VALIDATION.md) · [Native artifact provenance](PROVENANCE.md) · [Apache 2.0 license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
-
-The Flutter adapters pin the same beta.14 native SDK through Gradle and SwiftPM. Beta.13 adds native microphone PCM events and demo start/stop controls with frame counters. `audioPcm` is 16 kHz mono PCM16 little-endian; Flutter does not decode LC3. Archived binaries remain in this checkout for provenance checks; the plugin resolves its SDK dependencies remotely. See [validation](docs/VALIDATION.md) for hardware acceptance limits.

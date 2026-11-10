@@ -1,8 +1,24 @@
-# flutter_enterprise_sdk
+# Even Enterprise Sdk
 
 [English](README.md) | 简体中文
 
-一个用于在 Android 和 iOS 上连接**企业指定 Even G2 眼镜**的 Flutter 插件。蓝牙连接、按设备序列号（SN）匹配 License，以及设备验签均由 Kotlin / Swift 原生 SDK 完成。
+基于 Flutter 的 SDK，用于构建连接 **Even G2 glasses** 的 Android 和 iOS 应用，也提供 Kotlin、Swift 原生 SDK 供直接接入。蓝牙连接、设备授权、显示指令、麦克风音频和固件升级均由原生 SDK 处理。
+
+## 申请使用
+
+Enterprise SDK 当前处于 **alpha 申请阶段**。要让自己的应用连接 glasses：
+
+1. 在 [Even Hub 官网](https://hub.evenrealities.com/)注册或登录。
+2. 进入 [Enterprise tab](https://hub.evenrealities.com/hub?tab=enterprise) 申请 alpha 使用资格，并查看设备授权与固件详情。
+3. 审核通过后，按接入指引获取设备 License 和已启用企业服务的固件。
+
+## 选择接入方式
+
+| 应用 | 安装方式 | 接入指南 |
+| --- | --- | --- |
+| Flutter | 通过 Git 依赖引入 `even_devices_native`。 | [Flutter 安装](#安装-flutter) |
+| 原生 Android | 在 Gradle 中添加 `mavenCentral()` 和 `implementation("com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14")`。 | [Kotlin 接入](docs/NATIVE_SDK.md#android--maven-central) |
+| 原生 iOS | 在 Xcode 中通过 Swift Package Manager 添加[本仓库](https://github.com/even-realities/flutter_enterprise_sdk.git)，选择精确版本 `0.1.0-beta.14` 和 `EvenDevicesSDK` product。 | [Swift 接入](docs/NATIVE_SDK.md#ios--swift-package-manager) |
 
 ## 插件内容
 
@@ -13,7 +29,7 @@
 
 当前支持 G2，详见[能力与范围](docs/SCOPE.md)。
 
-## 安装
+## 安装 Flutter
 
 在 App 的 `pubspec.yaml` 中添加依赖，然后执行 `flutter pub get`：
 
@@ -22,10 +38,10 @@ dependencies:
   even_devices_native:
     git:
       url: https://github.com/even-realities/flutter_enterprise_sdk.git
-      ref: main
+      ref: ea53058edac83a6d7ecc6406593ab383c1f41e48
 ```
 
-正式项目建议将 `main` 替换为审核后的 commit，保证构建可复现。
+上面的依赖将 Flutter 适配层固定到审核后的 commit；两端原生 SDK 依赖均为 `0.1.0-beta.14`。
 
 要求：Android 5.0+（API 21）、iOS 15+，以及已启用企业服务的眼镜固件。仓库使用 Flutter 3.32.0；构建要求与蓝牙权限见[平台配置](docs/INTEGRATION.zh-CN.md#平台要求)。iOS 宿主须在 `Info.plist` 中添加 `NSBluetoothAlwaysUsageDescription`。
 
@@ -114,10 +130,6 @@ await subscription.cancel();
 
 连接和短文字页接口完成时表示请求已提交，实际结果通过 `sdk.events` 返回。其它页面及设备交互使用 `executeEvenHubCommand`，参数见[指令契约](docs/evenhub_commands.json)和[接入参考](docs/INTEGRATION.zh-CN.md)。
 
-## 纯原生 SDK
-
-两端固定使用原生 SDK **0.1.0-beta.14**。Android 通过 Maven Central 引入 `com.evenrealities.devices:even-devices-native-android`；iOS 通过 Swift Package Manager 引入本仓库的 **EvenDevicesSDK**。详见[原生接入指南](docs/NATIVE_SDK.md)。
-
 ## 运行示例
 
 连接手机后，在仓库根目录执行：
@@ -132,8 +144,6 @@ fvm flutter run
 
 ## 官方文档
 
-接下来阅读 **[Even Hub 官方文档：Get Started / Overview](https://hub.evenrealities.com/docs/get-started/overview)**，了解 Even Hub、显示与交互设计，以及应用开发流程。Flutter 连接 API 的用法以本仓库示例和接入参考为准。
+从 **[Even Enterprise 文档](https://hub.evenrealities.com/docs/enterprise/)**开始（即将上线）。上线前可先参考本仓库的 [Flutter 接入参考](docs/INTEGRATION.zh-CN.md)、[原生 SDK 指南](docs/NATIVE_SDK.md)和[示例应用](example/README.md)。
 
 [验证状态](docs/VALIDATION.md) · [原生产物来源](PROVENANCE.md) · [Apache 2.0 许可证](LICENSE) · [第三方许可](THIRD_PARTY_NOTICES.md)
-
-Flutter 适配层通过 Gradle 和 SwiftPM 固定使用同版本 beta.14 原生 SDK。beta.13 增加原生麦克风 PCM 音频与 Demo 开关/计数。`audioPcm` 是 16 kHz 单声道 PCM16 little-endian；Flutter 不解码 LC3。仓库保留的二进制用于来源与校验核对，插件通过远端仓库解析原生依赖。真实眼镜验收见[验证记录](docs/VALIDATION.md)。
