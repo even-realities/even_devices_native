@@ -1,0 +1,37 @@
+{
+  "version": "0.1.0-beta.11",
+  "license": "Apache-2.0",
+  "bundle_version": "0.1.0",
+  "build_number": "11",
+  "source_commit": "ad90051d51a2a022de901e9cc2933a64bbed7429",
+  "source_dirty": true,
+  "source_sha256": {
+    "native/ios/Sources/EvenDevicesSDK/EnterpriseLicense.swift": "be9054d76af7a2c66c3497851221c95589437f715da4784aa9a06145a0d34c7b",
+    "native/ios/Sources/EvenDevicesSDK/EvenDevicesG2SDK.swift": "5e6a9f890229c6e22b89510470c48b086c35c6c61574c73942011b553628d823",
+    "native/ios/Sources/EvenDevicesSDK/G2AuthenticationWire.swift": "29db64addee3a906699b739e3e3e8ac7dfea1eed671fecdcece311983e1ceb33",
+    "native/ios/Sources/EvenDevicesSDK/G2BusinessWire.swift": "3d32ade9b74679297d8af44c008a58a7b53427c324807089d851d2ef402c70f4",
+    "native/ios/Sources/EvenDevicesSDK/G2EndpointPair.swift": "eb3b4e4022c4a962575c4c7e0781a102606718d6f9d7dacd591fb083d856fff8",
+    "native/ios/Sources/EvenDevicesSDK/G2EvenHubCommands.swift": "f607a924501e5f17833839497fd1b3ef3ce6cdcc3e7f53d5591d12d801dbe2d8",
+    "native/ios/Sources/EvenDevicesSDK/G2EvenHubEvents.swift": "fe6d897bbd9e49d9fde02197bbd413b972feca95f545296e09da5bc2eeb9b0d7",
+    "native/ios/Sources/EvenDevicesSDK/G2EvenHubSession.swift": "f562385b44d7d28c430b7889e20cac4eb7cce6410bc8fb848530b09dec693c57",
+    "native/ios/Sources/EvenDevicesSDK/G2ReconnectBackoff.swift": "b75b833bdf6da65d6d27ebc679198245e91de7493e6a3eb6eca1f684f8136252",
+    "native/ios/Sources/EvenDevicesSDK/G2TimeSyncWire.swift": "9ad73062840fae381bad68afcecd6c5d11e290c7696c1b6c751261c094926206",
+    "native/ios/build_xcframework.sh": "7cae356acca48dede08881173b4789bef17caa22b515b647cce7ddad5ec774a3",
+    "tool/package_ios_sdk.sh": "cbb71a707574833bd91e921eca715e67eea880884d19db75fad93573025e6e31",
+    "tool/spm_manifest.py": "f760e0203aa9409e062b45855c08ceb0b3ac42c10eabfdcadeac2958e8554369",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "NOTICE": "77c6ab1a1b215d4c5aa9a0572b26f0140e1fc6d459b53403f620d11c7d447e6a",
+    "native/licenses/flutter_ezw_ble_LICENSE": "7903ed7b461b433377da023de26f252cc56db007a037a8d1547c6d7fb7e950ac"
+  },
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx26.0",
+  "zip": "EvenDevicesSDK-0.1.0-beta.11.xcframework.zip",
+  "zip_sha256": "8371b4005fb44bd49c7bc2905918eade73e68021df505cfbf332e3d254940199",
+  "validation": [
+    "swift tests",
+    "SwiftPM manifest",
+    "arm64 device consumer link",
+    "arm64 simulator consumer link",
+    "x86_64 simulator consumer link"
+  ]
+}

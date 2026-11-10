@@ -1,0 +1,22 @@
+name: even_devices_native_example
+description: Standalone Flutter host for the Even G2 native SDK adapter.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  even_devices_native:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

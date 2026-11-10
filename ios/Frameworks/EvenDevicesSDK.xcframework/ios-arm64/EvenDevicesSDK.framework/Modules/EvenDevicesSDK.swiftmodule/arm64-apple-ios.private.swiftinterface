@@ -1,0 +1,187 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.4 effective-5.10 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)
+// swift-module-flags: -target arm64-apple-ios15.0 -enable-objc-interop -enable-library-evolution -language-mode 5 -module-name EvenDevicesSDK
+// swift-module-flags-ignorable:  -formal-cxx-interoperability-mode=off -interface-compiler-version 6.4
+import CoreBluetooth
+import CoreFoundation
+import Foundation
+import OSLog
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+public struct EnterpriseBindingProof : Swift::Equatable {
+  public let appID: Swift::String
+  public let serialNumber: Swift::String
+  public let signature: Foundation::Data
+  public init(appID: Swift::String, serialNumber: Swift::String, signatureBase64: Swift::String) throws
+  public func authorizationPayloadV1() -> Foundation::Data
+  public static func == (a: EvenDevicesSDK::EnterpriseBindingProof, b: EvenDevicesSDK::EnterpriseBindingProof) -> Swift::Bool
+}
+public enum EnterpriseLicenseError : Swift::Error, Swift::Equatable {
+  case malformedJSON
+  case duplicateJSONKey
+  case duplicateSerialNumber
+  case unsupportedSchema
+  case invalidAppID
+  case invalidSerialNumber
+  case invalidSignature
+  case missingProof
+  public static func == (a: EvenDevicesSDK::EnterpriseLicenseError, b: EvenDevicesSDK::EnterpriseLicenseError) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+public struct EnterpriseLicenseBundle {
+  public let appID: Swift::String
+  public init(appID: Swift::String, signaturesBySerial: [Swift::String : Swift::String]) throws
+  public init(jsonData: Foundation::Data) throws
+  public func proof(for serialNumber: Swift::String) -> EvenDevicesSDK::EnterpriseBindingProof?
+}
+public enum G2Side : Swift::String, Swift::Hashable {
+  case left, right
+  public init?(rawValue: Swift::String)
+  public typealias RawValue = Swift::String
+  public var rawValue: Swift::String {
+    get
+  }
+}
+public enum G2Phase : Swift::String {
+  case discovered, waitingForForeground, connecting, enterpriseAuthorizing, businessAuthenticating
+  case retrying, ready, disconnected, failed
+  public init?(rawValue: Swift::String)
+  public typealias RawValue = Swift::String
+  public var rawValue: Swift::String {
+    get
+  }
+}
+public enum G2Failure : Swift::String {
+  case bluetoothUnavailable, deviceNotSeen, proofNotFound, busy
+  case connectionFailed, enterpriseServiceMissing, characteristicMissing
+  case mtuTooSmall, authorizationNotificationFailed, authorizationWriteFailed
+  case authorizationMalformedResult, authorizationSerialMismatch
+  case authorizationSignatureRejected, authorizationDeviceError
+  case authorizationConnectionState, authorizationTimedOut
+  case businessNotificationFailed, businessWriteFailed
+  case businessAuthorizationViolation, businessAuthTimedOut
+  public init?(rawValue: Swift::String)
+  public typealias RawValue = Swift::String
+  public var rawValue: Swift::String {
+    get
+  }
+}
+public struct G2Event {
+  public let namespace: Swift::String
+  public let serialNumber: Swift::String
+  public let side: EvenDevicesSDK::G2Side?
+  public let endpointID: Foundation::UUID?
+  public let sessionGeneration: Swift::UInt64
+  public let attemptGeneration: Swift::UInt64?
+  public let phase: EvenDevicesSDK::G2Phase
+  public let failure: EvenDevicesSDK::G2Failure?
+}
+public struct G2BusinessEvent {
+  public let serialNumber: Swift::String
+  public let side: EvenDevicesSDK::G2Side
+  public let endpointID: Foundation::UUID
+  public let sessionGeneration: Swift::UInt64
+  public let attemptGeneration: Swift::UInt64
+  public let service: EvenDevicesSDK::G2BusinessService
+  public let payload: Foundation::Data
+}
+public enum G2BusinessCommandError : Swift::Error, Swift::Equatable {
+  case notReady, busy, malformedPayload, packetTooLarge
+  case writeFailed, timedOut, transportRejected, deviceRejected, disconnected
+  public static func == (a: EvenDevicesSDK::G2BusinessCommandError, b: EvenDevicesSDK::G2BusinessCommandError) -> Swift::Bool
+  public func hash(into hasher: inout Swift::Hasher)
+  public var hashValue: Swift::Int {
+    get
+  }
+}
+@objc final public class EvenDevicesG2SDK : ObjectiveC::NSObject {
+  public typealias EventHandler = (EvenDevicesSDK::G2Event) -> Swift::Void
+  public typealias BusinessEventHandler = (EvenDevicesSDK::G2BusinessEvent) -> Swift::Void
+  public typealias EvenHubEventHandler = (EvenDevicesSDK::G2EvenHubEvent) -> Swift::Void
+  public init(namespace: Swift::String, licenseBundle: EvenDevicesSDK::EnterpriseLicenseBundle, autoReconnect: Swift::Bool = false, onEvent: @escaping EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::EventHandler, onBusinessEvent: EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::BusinessEventHandler? = nil, onEvenHubEvent: EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::EvenHubEventHandler? = nil)
+  @objc deinit
+  final public func updateLicenses(_ bundle: EvenDevicesSDK::EnterpriseLicenseBundle)
+  final public func scan()
+  final public func stopScan()
+  final public func connectG2(serialNumber: Swift::String, endpointIDs: EvenDevicesSDK::G2EndpointPair? = nil)
+  final public func sendBusinessCommand(side: EvenDevicesSDK::G2Side, service: EvenDevicesSDK::G2BusinessService, payload: Foundation::Data, magicRandom: Swift::UInt64, responseRequired: Swift::Bool = true, completion: @escaping (Swift::Result<Foundation::Data, EvenDevicesSDK::G2BusinessCommandError>) -> Swift::Void)
+  final public func syncTime(epochSeconds: Swift::UInt32, utcOffsetMinutes: Swift::Int, completion: @escaping (Swift::Result<Swift::Void, EvenDevicesSDK::G2BusinessCommandError>) -> Swift::Void)
+  final public func syncTime(completion: @escaping (Swift::Result<Swift::Void, EvenDevicesSDK::G2BusinessCommandError>) -> Swift::Void)
+  final public func openEvenHubTextPage(text: Swift::String) throws
+  final public func closeEvenHub() throws
+  final public func executeEvenHubCommand(commandName: Swift::String, parameters: [Swift::String : Any], completion: @escaping (Swift::Result<[Swift::String : Any], EvenDevicesSDK::G2EvenHubError>) -> Swift::Void)
+  final public func disconnect()
+}
+extension EvenDevicesSDK::EvenDevicesG2SDK : CoreBluetooth::CBCentralManagerDelegate {
+  @objc final public func centralManagerDidUpdateState(_ central: CoreBluetooth::CBCentralManager)
+  @objc final public func centralManager(_ central: CoreBluetooth::CBCentralManager, didDiscover peripheral: CoreBluetooth::CBPeripheral, advertisementData: [Swift::String : Any], rssi RSSI: Foundation::NSNumber)
+  @objc final public func centralManager(_ central: CoreBluetooth::CBCentralManager, didConnect peripheral: CoreBluetooth::CBPeripheral)
+  @objc final public func centralManager(_ central: CoreBluetooth::CBCentralManager, didFailToConnect peripheral: CoreBluetooth::CBPeripheral, error: (any Swift::Error)?)
+  @objc final public func centralManager(_ central: CoreBluetooth::CBCentralManager, didDisconnectPeripheral peripheral: CoreBluetooth::CBPeripheral, error: (any Swift::Error)?)
+}
+extension EvenDevicesSDK::EvenDevicesG2SDK : CoreBluetooth::CBPeripheralDelegate {
+  @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didDiscoverServices error: (any Swift::Error)?)
+  @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didDiscoverCharacteristicsFor service: CoreBluetooth::CBService, error: (any Swift::Error)?)
+  @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didUpdateNotificationStateFor characteristic: CoreBluetooth::CBCharacteristic, error: (any Swift::Error)?)
+  @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didWriteValueFor characteristic: CoreBluetooth::CBCharacteristic, error: (any Swift::Error)?)
+  @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didUpdateValueFor characteristic: CoreBluetooth::CBCharacteristic, error: (any Swift::Error)?)
+}
+public enum G2BusinessService : Swift::UInt8 {
+  case notification
+  case deviceSettings
+  case evenHub
+  public init?(rawValue: Swift::UInt8)
+  public typealias RawValue = Swift::UInt8
+  public var rawValue: Swift::UInt8 {
+    get
+  }
+}
+public struct G2EndpointPair : Swift::Equatable {
+  public let left: Foundation::UUID
+  public let right: Foundation::UUID
+  public init?(left: Foundation::UUID, right: Foundation::UUID)
+  public static func == (a: EvenDevicesSDK::G2EndpointPair, b: EvenDevicesSDK::G2EndpointPair) -> Swift::Bool
+}
+public enum G2EvenHubError : Swift::String, Swift::Error {
+  case notReady, busy, invalidText, invalidArguments, deviceRejected, transportFailed, disconnected, cancelled
+  public init?(rawValue: Swift::String)
+  public typealias RawValue = Swift::String
+  public var rawValue: Swift::String {
+    get
+  }
+}
+public struct G2EvenHubEvent {
+  public let namespace: Swift::String
+  public let serialNumber: Swift::String
+  public let endpointID: Foundation::UUID
+  public let side: Swift::String
+  public let sessionGeneration: Swift::UInt64
+  public let attemptGeneration: Swift::UInt64
+  public let operation: Swift::UInt64
+  public let phase: Swift::String
+  public let event: Swift::String?
+  public let failure: Swift::String?
+  public let heartbeatCount: Swift::UInt32
+  public let details: [Swift::String : Any]
+}
+extension EvenDevicesSDK::EnterpriseLicenseError : Swift::Hashable {}
+extension EvenDevicesSDK::G2Side : Swift::RawRepresentable {}
+extension EvenDevicesSDK::G2Phase : Swift::Equatable {}
+extension EvenDevicesSDK::G2Phase : Swift::Hashable {}
+extension EvenDevicesSDK::G2Phase : Swift::RawRepresentable {}
+extension EvenDevicesSDK::G2Failure : Swift::Equatable {}
+extension EvenDevicesSDK::G2Failure : Swift::Hashable {}
+extension EvenDevicesSDK::G2Failure : Swift::RawRepresentable {}
+extension EvenDevicesSDK::G2BusinessCommandError : Swift::Hashable {}
+extension EvenDevicesSDK::G2BusinessService : Swift::Equatable {}
+extension EvenDevicesSDK::G2BusinessService : Swift::Hashable {}
+extension EvenDevicesSDK::G2BusinessService : Swift::RawRepresentable {}
+extension EvenDevicesSDK::G2EvenHubError : Swift::Equatable {}
+extension EvenDevicesSDK::G2EvenHubError : Swift::Hashable {}
+extension EvenDevicesSDK::G2EvenHubError : Swift::RawRepresentable {}

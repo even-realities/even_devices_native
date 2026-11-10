@@ -1,0 +1,22 @@
+PODS:
+  - even_devices_native (0.1.0-beta.11):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - even_devices_native (from `.symlinks/plugins/even_devices_native/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  even_devices_native:
+    :path: ".symlinks/plugins/even_devices_native/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  even_devices_native: 4b2ee867914bac9841100246b005bb9c0e312bec
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+
+PODFILE CHECKSUM: f38b7ba3c7eebb0cb980e88ef4be0eb2c8d1d372
+
+COCOAPODS: 1.16.2
