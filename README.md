@@ -189,7 +189,7 @@ Flutter 3.32 与 Xcode 27 的通用模拟器构建存在已知多架构 `lipo` �
 
 ## 当前边界与迁移
 
-本包不依赖根 `even_devices_sdk`，也不注册旧 Flutter BLE 插件。现有 `EvConnect` 和根 `example` 保持原有实现；切换宿主时替换依赖和 import，按上述原生事件重新接线。两包在仓库中并存，宿主 App 须移除旧 `even_devices_sdk` / BLE 插件依赖后再接入本包；Android standalone AAR 与旧传输有重叠类，不能同时打入同一个 App。
+本包直接链接原生 AAR / XCFramework。宿主接入时替换依赖和 import，并按原生事件接线；移除旧 `even_devices_sdk` / BLE 插件依赖后再接入本包。Android standalone AAR 与旧传输有重叠类，不能同时打入同一个 App。
 
 本次不交付 R1，也尚未接入通知、OTA、完整业务队列、后台自动恢复或异步 license provider；EvenHub 图片预处理工具仍未迁移。这些能力不能以旧 Flutter 业务实现补入本包。详见仓库 [迁移状态](docs/SCOPE.md)。构建与自动化测试不能代替此独立插件在 Android/iOS 上的真实 G2 双腿验收；该验收仍待执行。
 
