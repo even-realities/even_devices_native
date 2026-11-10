@@ -1,7 +1,7 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-// Pin the native iOS archive independently of the Flutter plugin binaries.
+// SwiftPM consumes the same release framework as the Flutter CocoaPods adapter.
 let package = Package(
     name: "EvenDevicesSDK",
     platforms: [.iOS(.v15)],
@@ -11,7 +11,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "EvenDevicesSDK",
-            path: "spm/EvenDevicesSDK-0.1.0-beta.12.xcframework.zip"
+            path: "spm/EvenDevicesSDK-0.1.0-beta.14.xcframework.zip"
         ),
     ]
 )

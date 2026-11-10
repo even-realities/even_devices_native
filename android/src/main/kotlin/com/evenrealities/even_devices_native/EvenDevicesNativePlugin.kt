@@ -111,6 +111,36 @@ class EvenDevicesNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                     // Native completion reports its operation ID through the timeSync event.
                     result.success(null)
                 }
+                "startOta" -> {
+                    requireOwner()
+                    val firmware = call.argument<Any?>("firmware") as? ByteArray
+                        ?: throw BridgeFailure("invalidArguments", "Firmware bytes are required.")
+                    val targetVersion = call.argument<Any?>("targetVersion") as? String
+                        ?: throw BridgeFailure("invalidArguments", "A target firmware version is required.")
+                    try {
+                        result.success(sdk.startOta(firmware, targetVersion))
+                    } catch (error: RuntimeException) {
+                        // Only stable native admission reasons may cross the channel.
+                        val code = error.message
+                        if (code == "notReady" || code == "busy" ||
+                            code == "invalidFirmware" || code == "invalidTargetVersion") {
+                            throw BridgeFailure(code, "The native SDK rejected this OTA request.")
+                        }
+                        throw error
+                    }
+                }
+                "cancelOta" -> {
+                    requireOwner()
+                    // StandardMessageCodec uses either Int or Long for a Dart operation ID.
+                    val operation = when (val id = call.argument<Any?>("operationId")) {
+                        is Int -> id.toLong()
+                        is Long -> id
+                        else -> null
+                    }?.takeIf { it > 0 }
+                        ?: throw BridgeFailure("invalidArguments", "A positive OTA operation ID is required.")
+                    sdk.cancelOta(operation)
+                    result.success(null)
+                }
                 "openEvenHubTextPage" -> {
                     requireOwner()
                     // Text byte limits, READY admission, packet creation and the lease are native.
@@ -172,7 +202,12 @@ class EvenDevicesNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         val ownerEpoch = epoch
         try {
             sdk.initialize(context, bundle,
-                onEvent = { event ->
+                onEvent = transport@{ event ->
+                    // STREAM audio already arrives as native-decoded PCM below.
+                    // Suppress its duplicate base64 transport envelope before
+                    // recursive normalization and a second main-thread delivery.
+                    val raw = event.value as? Map<*, *>
+                    if (event.type.name == "RECEIVE_DATA" && raw?.get("psType") == 2) return@transport
                     val value = normalize(event.value)
                     emit(ownerEpoch, requestedNamespace, mapOf(
                         "type" to "transport", "category" to event.type.name, "value" to value,
@@ -208,6 +243,17 @@ class EvenDevicesNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                         "phase" to event.phase, "failure" to event.failure,
                     ), connectionRevision)
                 },
+                onOtaEvent = { event ->
+                    // An update spans reconnects. Its native operation ID and original owner
+                    // remain authoritative when the pair's connection revision changes.
+                    emit(ownerEpoch, requestedNamespace, mapOf(
+                        "type" to "ota", "sn" to event.sn, "generation" to event.generation,
+                        "endpointId" to event.endpoint, "operation" to event.operation,
+                        "phase" to event.phase, "failure" to event.failure, "progress" to event.progress,
+                        "sessionGeneration" to event.session, "attemptGeneration" to event.attempt,
+                        "leftVersion" to event.leftVersion, "rightVersion" to event.rightVersion,
+                    ))
+                },
                 onEvenHubEvent = { event ->
                     val owner = event.owner
                     emit(ownerEpoch, requestedNamespace, mapOf(
@@ -217,7 +263,7 @@ class EvenDevicesNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
                         "phase" to event.phase, "failure" to event.failure,
                         "event" to event.event, "heartbeatCount" to event.heartbeatCount,
                         "details" to event.details,
-                    ), connectionRevision)
+                    ), connectionRevision, inlineOnMain = true)
                 })
             result.success(null)
         } catch (error: Exception) {
@@ -264,16 +310,22 @@ class EvenDevicesNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
 
     /** Freeze namespace and subscription before delivering SDK callbacks on Flutter's main thread. */
     private fun emit(ownerEpoch: Long, ownerNamespace: String, event: Map<String, Any?>,
-                     revision: Long? = null) {
+                     revision: Long? = null, inlineOnMain: Boolean = false) {
         val payload = event + ("namespace" to ownerNamespace)
         val subscriber = subscriptionRevision
-        main.post {
+        val dispatch = Runnable {
             if (engine != null && activeOwner === this && epoch == ownerEpoch &&
                 subscriptionRevision == subscriber &&
                 (revision == null || connectionRevision == revision)) {
                 sink?.success(payload)
             }
         }
+        // Native EvenHub serializes page events and PCM on main and validates
+        // decoder ownership immediately before delivery. A second queue would
+        // let stop/restart interleave after that check. Inline the entire native
+        // EvenHub sequence so page opening still precedes its first audio frame.
+        if (inlineOnMain && Looper.myLooper() == Looper.getMainLooper()) dispatch.run()
+        else main.post(dispatch)
     }
 
     /** Normalize scan display data only; license lookup and GATT admission stay inside the SDK. */
@@ -284,7 +336,8 @@ class EvenDevicesNativePlugin : FlutterPlugin, MethodChannel.MethodCallHandler,
         if (serial.isEmpty()) return null
         val devices = (raw["devices"] as? List<*>)?.mapNotNull { item ->
             val device = item as? Map<*, *> ?: return@mapNotNull null
-            if (device["belongConfig"] != "g2_glasses" || device["sn"] != serial) return@mapNotNull null
+            // Scan results carry the standalone SDK configuration name for each endpoint.
+            if (device["belongConfig"] != EvenDevicesAndroidBle.G2_CONFIG || device["sn"] != serial) return@mapNotNull null
             val address = device["uuid"] as? String ?: return@mapNotNull null
             val name = device["name"] as? String ?: return@mapNotNull null
             val side = when {

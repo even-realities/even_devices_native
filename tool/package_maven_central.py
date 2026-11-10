@@ -2,8 +2,8 @@
 """Prepare an immutable Maven Central bundle from the audited binary SDK.
 
 This command never uploads, rebuilds the AAR, or creates a signing identity.
-The public distribution is binary-only: the sources classifier says so instead
-of accidentally publishing native implementation sources from another checkout.
+The sources classifier reads Android code from the distributed Git bundle at
+the exact revision used to build the AAR.
 """
 
 import argparse
@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import tarfile
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -139,13 +140,22 @@ def verify_inputs(root, version):
                 raise BundleError("AAR lacks the standalone SDK entry point.")
             if any(name.startswith("io/flutter/") or "FlutterEzwBlePlugin" in name for name in names):
                 raise BundleError("AAR contains Flutter runtime classes.")
+            inventory = classes.read("META-INF/THIRD_PARTY_NOTICES.md").decode()
+            if any(name not in inventory for name in ("flutter_ezw_ble", "flutter_ezw_utils", "liblc3")):
+                raise BundleError("Incomplete native AAR component notices.")
             for entry, name in (
                 ("META-INF/even-devices-LICENSE.txt", "LICENSE"),
                 ("META-INF/even-devices-NOTICE.txt", "NOTICE"),
                 ("META-INF/licenses/flutter_ezw_ble_LICENSE", "licenses/flutter_ezw_ble_LICENSE"),
+                ("META-INF/licenses/flutter_ezw_ble_LICENSE", "licenses/flutter_ezw_utils_LICENSE"),
+                ("META-INF/licenses/liblc3_LICENSE", "licenses/liblc3_LICENSE"),
             ):
                 if name not in manifest or classes.read(entry) != (root / name).read_bytes():
                     raise BundleError("AAR license notice differs from the audited distribution.")
+    for required in (f"source/native-sdk-{version}.tar.gz", "build_records/android.json",
+                     "licenses/flutter_ezw_utils_LICENSE", "licenses/liblc3_LICENSE"):
+        if required not in manifest:
+            raise BundleError(f"Missing audited native source or notice: {required}")
     return files, pom
 
 
@@ -167,7 +177,7 @@ def central_pom(pom):
     for name, value in (
         ("id", "even-realities"), ("name", "Even Realities"),
         ("url", "https://www.evenrealities.com"),
-        ("organization", "Even Realities"),
+        ("organization", "Hong Kong Even Realities Limited"),
         ("organizationUrl", "https://www.evenrealities.com"),
     ):
         element(name, value, developer)
@@ -194,6 +204,42 @@ def write_jar(path, entries):
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, data)
+
+
+def android_sources(root, version, work):
+    """Read implementation files from the portable bundle at the native build commit."""
+    record = json.loads((root / "build_records/android.json").read_text())
+    commit = record.get("source_commit", "")
+    if (record.get("working_tree_dirty") is not False or
+            record.get("coordinate") != f"{GROUP}:{ARTIFACT}:{version}" or
+            not re.fullmatch(r"[a-f0-9]{40}", commit)):
+        raise BundleError("Android sources require the matching clean native build record.")
+    bundle = work / "native-sdk.bundle"
+    with tarfile.open(root / f"source/native-sdk-{version}.tar.gz", "r:gz") as source:
+        members = [entry for entry in source if entry.isfile() and
+                   PurePosixPath(entry.name).name == bundle.name]
+        if len(members) != 1:
+            raise BundleError("Source archive must contain a single native Git bundle.")
+        bundle.write_bytes(source.extractfile(members[0]).read())
+    repo = work / "source.git"
+    subprocess.run(["git", "clone", "--quiet", "--bare", "--branch", "main",
+                    str(bundle), str(repo)], check=True)
+    git = ["git", "--git-dir", str(repo)]
+    if subprocess.check_output(git + ["rev-parse", "HEAD"], text=True).strip() != commit:
+        raise BundleError("Native source bundle commit differs from Android build record.")
+    # Keep JVM package-relative paths for IDEs and the native C/JNI source paths
+    # for inspection. Precompiled vendor codec objects remain in the build bundle.
+    tree = subprocess.check_output(git + ["archive", commit, "native/android/src/main",
+                                           "native/ios/Sources/EvenLC3"])
+    files = {}
+    with tarfile.open(fileobj=io.BytesIO(tree)) as archive:
+        for member in archive:
+            if member.isfile() and PurePosixPath(member.name).suffix in (".kt", ".java", ".cpp", ".h", ".c"):
+                name = member.name.removeprefix("native/android/src/main/kotlin/")
+                files[name] = archive.extractfile(member).read()
+    if "com/evenrealities/devices/EvenDevicesAndroidBle.kt" not in files:
+        raise BundleError("Source bundle lacks the Android SDK entry point.")
+    return files
 
 
 def sign_and_verify(files, fingerprint, gpg):
@@ -237,15 +283,11 @@ def build_bundle(root, version, destination, *, unsigned=False, signing_key=None
             shutil.copyfile(files[suffix], release / files[suffix].name)
         (release / (stem + ".pom")).write_bytes(central_pom(pom))
         notices = {name: (root / name).read_bytes() for name in (
-            "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "licenses/flutter_ezw_ble_LICENSE"
+            "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "licenses/flutter_ezw_ble_LICENSE",
+            "licenses/flutter_ezw_utils_LICENSE", "licenses/liblc3_LICENSE"
         )}
-        placeholder = (
-            "# Binary SDK source notice\n\n"
-            "This is an explicitly labeled sources placeholder for a binary-only SDK.\n"
-            "It does not contain implementation source code.\n"
-            f"Public integration guide: {REPOSITORY}/blob/main/docs/NATIVE_SDK.md\n"
-        ).encode()
-        write_jar(release / (stem + "-sources.jar"), {**notices, "README.md": placeholder})
+        sources = android_sources(root, version, Path(work))
+        write_jar(release / (stem + "-sources.jar"), {**notices, **sources})
         page = "<!doctype html><meta charset=utf-8><title>Even Devices Android SDK</title><pre>" + html.escape(guide.decode()) + "</pre>\n"
         write_jar(release / (stem + "-javadoc.jar"), {**notices, "README.md": guide, "index.html": page.encode()})
         primary = sorted(release.iterdir())
@@ -270,7 +312,7 @@ def build_bundle(root, version, destination, *, unsigned=False, signing_key=None
             "signed": not unsigned, "upload_ready": not unsigned,
             "central_validation": "not_run", "public_key_distribution": "not_checked",
             "signing_key": signing_key.upper() if signing_key else None,
-            "source_distribution": "documentation-placeholder",
+            "source_distribution": "native-build-commit",
             "artifacts": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in primary},
             "notice": "NOT UPLOAD-READY: unsigned inspection bundle." if unsigned else
                       "Locally verified signatures; Central namespace and public-key availability still require verification.",

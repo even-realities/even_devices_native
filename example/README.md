@@ -1,6 +1,10 @@
 # 原生 SDK Flutter 示例
 
-只依赖 `even_devices_native`，用于手动验证原生 G2 连接与 EvenHub。启动不会自动初始化、扫描或连接。
+只依赖 `even_devices_native`，用于手动验证原生 G2 连接、EvenHub 与双腿 OTA。启动不会自动初始化、扫描或连接。
+
+## 原生依赖
+
+Android 使用 Maven Central 的 beta.14，iOS 使用 SPM 的同版本 SDK。运行 iOS 前执行 `fvm flutter config --enable-swift-package-manager`；也可在构建命令前添加 `FLUTTER_SWIFT_PACKAGE_MANAGER=true`。示例已移除 CocoaPods 集成，详见[依赖迁移记录](../docs/DEPENDENCY_MIGRATION.md)。
 
 ```bash
 fvm flutter pub get
@@ -10,8 +14,8 @@ fvm flutter run -d <device-id>
 
 1. 打开右上角设置，填写 namespace 和签名平台导出的完整多 SN License JSON，初始化并允许系统蓝牙权限；Android 旧系统还需开启定位服务。
 2. 在「扫描」页扫描，等目标 SN 的左右腿均被发现后点击连接。扫描候选独立于当前设备详情。
-3. 在「设备」页查看整机状态、SN、双腿端点和原生阶段。只有原生整机 READY 才开放时间同步与 EvenHub。
-4. 在「EvenHub」页编辑短文字并显示到眼镜。预览是待提交内容；原生 `active` 才代表眼镜确认创建。查看页面状态、已确认心跳次数和触摸事件，结束时关闭页面。
+3. 在「设备」页查看整机状态、SN、双腿端点和原生阶段。整机 READY 后可执行时间同步、EvenHub 或 OTA。进行 OTA 时，关闭活动的 EvenHub 页面，选择对应型号的 EVENOTA `.bin`（示例限 32 MiB），填写固件发布的目标版本，再点击开始升级。可在本页查看进度和取消，最终成功需等双腿重连并读回目标版本。
+4. 在「EvenHub」页编辑短文字并显示到眼镜。预览是待提交内容；原生 `active` 才代表眼镜确认创建。页面创建成功后点击「开启麦克风」。收到音频后，每 0.5 秒刷新累计帧数、字节数和最近一帧的前 32 个 PCM 字节（十六进制）。点击「停止麦克风」清空预览；音频字节只在页面内短暂显示。
 5. 「日志」页独立展示带时间的请求和原生事件，支持搜索、类别筛选、暂停显示、清空和复制；暂停仍会采集，最多保留 500 条。复制内容经过字段白名单处理。
 6. 结束时断开或 Reset。切换 namespace 后重新初始化。EvenHub 页面活动时暂不可同步时间，避免与页面命令竞争原生传输。
 

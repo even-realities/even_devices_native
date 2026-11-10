@@ -1,0 +1,97 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.evenrealities.devices",
+    "module": "even-devices-native-android",
+    "version": "0.1.0-beta.13",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseVariantReleaseApiPublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.1.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "even-devices-native-android-0.1.0-beta.13.aar",
+          "url": "even-devices-native-android-0.1.0-beta.13.aar",
+          "size": 1568355,
+          "sha512": "36069903cba5ce1be1d3def64859330e396c493e10d171d0d811e2697eafaa2d56e18882adc1a0e0153eeb87682d77f49c053b23f33d03486c7eef7e8df02608",
+          "sha256": "7f0865c7aceb18a5b1d9f022627c08c17f24c676cb39647072029ef06fafb767",
+          "sha1": "5a34efa81a0665a742a0188d16d9d915b5412804",
+          "md5": "85781a57d10fe25683530e0dd3e1ba23"
+        }
+      ]
+    },
+    {
+      "name": "releaseVariantReleaseRuntimePublication",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.libraryelements": "aar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-android",
+          "version": {
+            "requires": "1.10.2"
+          }
+        },
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.11.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.1.10"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "even-devices-native-android-0.1.0-beta.13.aar",
+          "url": "even-devices-native-android-0.1.0-beta.13.aar",
+          "size": 1568355,
+          "sha512": "36069903cba5ce1be1d3def64859330e396c493e10d171d0d811e2697eafaa2d56e18882adc1a0e0153eeb87682d77f49c053b23f33d03486c7eef7e8df02608",
+          "sha256": "7f0865c7aceb18a5b1d9f022627c08c17f24c676cb39647072029ef06fafb767",
+          "sha1": "5a34efa81a0665a742a0188d16d9d915b5412804",
+          "md5": "85781a57d10fe25683530e0dd3e1ba23"
+        }
+      ]
+    }
+  ]
+}

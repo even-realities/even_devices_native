@@ -2,6 +2,22 @@
 
 [English README](../README.md) · [中文首页](../README.zh-CN.md)
 
+## 原生依赖管理
+
+Android 插件通过 Gradle 从 Maven Central 固定引入 `com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14`。宿主依赖仓库需包含 `google()` 和 `mavenCentral()`；不再注入插件内的 `android/maven` 本地仓库。
+
+iOS 插件的 `ios/even_devices_native/Package.swift` 从 GitHub 精确引入 `EvenDevicesSDK` 的 `0.1.0-beta.14`，并包含桥接代码和隐私清单。最低 Flutter 3.32、iOS 15。先执行：
+
+```bash
+fvm flutter config --enable-swift-package-manager
+fvm flutter pub get
+fvm flutter build ios --profile --no-codesign
+```
+
+不想修改全局 Flutter 配置时，使用 `FLUTTER_SWIFT_PACKAGE_MANAGER=true fvm flutter build ios --profile --no-codesign`。首次构建由 Flutter 自动为宿主 Xcode 工程加入 `FlutterGeneratedPluginSwiftPackage` 和准备脚本；提交生成的 Xcode 工程/共享 scheme 变更以及 `Package.resolved`。
+
+本插件仅支持 SPM，没有 podspec。已有 CocoaPods 宿主可先保留其它插件的 Pods；Flutter 会按插件选择依赖管理器。如果所有插件都支持 SPM，可执行 `pod deintegrate`，再删除 Podfile/Podfile.lock 及 Pods 引用。本仓库两个示例已完成此迁移。首次解析两端 SDK 均需要网络。
+
 ## 初始化和连接
 
 ```dart
@@ -103,6 +119,21 @@ await sdk.executeEvenHubCommand(EvenHubCommand.shutdownPage);
 
 `updateImage` 的 `data` 必须已经是与 `compressMode` 对应的固件图片字节；本版未提供 PNG/BMP 解码、像素转换或 LZ4 压缩工具。完整指令集通过自动化测试，仍需在正式固件上逐项验收。
 
+## G2 固件升级
+
+在设备达到整机 READY 后，向 SDK 提交与该 G2 型号匹配的完整 EVENOTA 固件文件字节和目标版本。先订阅 `sdk.events`，按 SN、`operation` 和连接代次关联 `ota` 事件。
+
+```dart
+final operationId = await sdk.startOta(
+  firmware: firmwareBytes, // Uint8List
+  targetVersion: targetVersionFromRelease,
+);
+// 用户取消这个任务时
+await sdk.cancelOta(operationId: operationId);
+```
+
+返回的 ID 表示升级已受理。原生 SDK 管理双腿传输、流控和重连后的版本校验。`transportCompleted` 表示传输结束。收到确认左右腿目标版本的 `succeeded` 事件后，才向用户显示安装成功。
+
 ## 事件与生命周期
 
 | 类型 | 含义 |
@@ -111,6 +142,7 @@ await sdk.executeEvenHubCommand(EvenHubCommand.shutdownPage);
 | `g2` | 原生连接及授权结果；只有整机 `ready` 可以表示 READY |
 | `timeSync` | 原生时间同步结果，包含适用的 operation/generation |
 | `evenHub` | 原生页面生命周期、心跳确认和已解码的交互事件；提交请求不等于显示成功 |
+| `ota` | G2 固件升级阶段、operationId 与进度；双腿版本读回成功后才确认升级完成 |
 | `transport` / `business` | 平台诊断或已收到的数据，不作为整机 READY |
 
 事件保留 `namespace`、SN、side、endpointId 和适用的代际字段。Android 当前公开整机 generation；缺失的 session/attempt 字段保持 null，调用方不得伪造。各平台诊断详情可以不同，未知类型或 phase 仍保留供观察。
@@ -143,12 +175,12 @@ fvm flutter test
 cd example
 fvm flutter test
 fvm flutter build apk --debug
-fvm flutter build ios --no-codesign --debug
+FLUTTER_SWIFT_PACKAGE_MANAGER=true fvm flutter build ios --no-codesign --profile
 ```
 
 Flutter 3.32 与 Xcode 27 的通用模拟器构建存在已知多架构 `lipo` 校验问题，见 [Flutter 官方修复](https://github.com/flutter/flutter/pull/188625)。本工作站用 Xcode 的 `ARCHS=arm64 ONLY_ACTIVE_ARCH=YES` 构建并运行模拟器 XCTest；没有修改全局 Flutter SDK。复现命令见 [示例说明](../example/README.md)。
 
-当前版本重新构建 standalone beta.11 AAR / XCFramework，提供原生 EvenHub 指令集和文字页便利接口，并修复心跳计数回显及接收尾部填充兼容问题。心跳确认次数是原生本地指标，ACK 的 Cnt 不参与请求关联。自动化验证包含协议向量、原生会话及超时测试、Flutter 桥接和示例状态测试；详细结果见 [心跳修复记录](VALIDATION.md#evenhub)及[指令迁移记录](VALIDATION.md#evenhub)。这些检查不代替真实眼镜验收。beta.9 仅在原生心跳 ACK 解析中增加对现场固件回填 Cmd12 的兼容，标准 Cmd13 和其余校验保留；WK iPhone 15 的用户真机反馈为 37 次心跳确认；连续 ACK 日志有采集缺口，关闭停止续期和 Android 真机仍待验。
+beta.11 重新构建 standalone AAR / XCFramework，提供原生 EvenHub 指令集和文字页便利接口，并修复心跳计数回显及接收尾部填充兼容问题。心跳确认次数是原生本地指标，ACK 的 Cnt 不参与请求关联。自动化验证包含协议向量、原生会话及超时测试、Flutter 桥接和示例状态测试；详细结果见 [心跳修复记录](VALIDATION.md#evenhub)及[指令迁移记录](VALIDATION.md#evenhub)。这些检查不代替真实眼镜验收。beta.9 仅在原生心跳 ACK 解析中增加对现场固件回填 Cmd12 的兼容，标准 Cmd13 和其余校验保留；WK iPhone 15 的用户真机反馈为 37 次心跳确认；连续 ACK 日志有采集缺口，关闭停止续期和 Android 真机仍待验。
 
 构建使用 Flutter 3.32.0、JDK 21、Gradle 8.12、AGP 8.7.3 和 Xcode 27。Android API 36 的正式工具链支持及 G2 真机双腿验收仍属于发布前待完成项。
 
@@ -156,6 +188,6 @@ Flutter 3.32 与 Xcode 27 的通用模拟器构建存在已知多架构 `lipo` �
 
 本包直接链接原生 AAR / XCFramework。宿主接入时替换依赖和 import，并按原生事件接线；移除旧 `even_devices_sdk` / BLE 插件依赖后再接入本包。Android standalone AAR 与旧传输有重叠类，不能同时打入同一个 App。
 
-本次不交付 R1，也尚未接入通知、OTA、完整业务队列、后台自动恢复或异步 license provider；EvenHub 图片预处理工具仍未迁移。这些能力不能以旧 Flutter 业务实现补入本包。详见仓库 [迁移状态](SCOPE.md)。构建与自动化测试不能代替此独立插件在 Android/iOS 上的真实 G2 双腿验收；该验收仍待执行。
+本次不交付 R1，也尚未接入通知、完整业务队列、后台自动恢复或异步 license provider；EvenHub 图片预处理工具仍未迁移。这些能力不能以旧 Flutter 业务实现补入本包。详见仓库 [迁移状态](SCOPE.md)。构建与自动化测试不能代替此独立插件在 Android/iOS 上的真实 G2 双腿验收；该验收仍待执行。
 
-当前 beta.11 修复已由 iOS 现场日志证实的 TimeSync 请求 magic 超出固件回填范围问题；Android/iOS 原生分配统一为 1–255，应答仍精确匹配。修复后真机结果待用户触发，见[时间同步记录](VALIDATION.md#timesync)。
+beta.11 修复已由 iOS 现场日志证实的 TimeSync 请求 magic 超出固件回填范围问题；Android/iOS 原生分配统一为 1–255，应答仍精确匹配。修复后真机结果待用户触发，见[时间同步记录](VALIDATION.md#timesync)。

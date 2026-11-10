@@ -1,5 +1,5 @@
 group = "com.evenrealities.even_devices_native"
-version = "0.1.0-beta.11"
+version = "0.1.0-beta.14"
 
 buildscript {
     ext.kotlin_version = "2.1.10"
@@ -14,21 +14,10 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
-// Resolve the standalone native SDK from the plugin package, without legacy Flutter BLE.
-def nativeSdkRepository = uri("$projectDir/maven")
-rootProject.allprojects {
-    repositories { maven { url nativeSdkRepository } }
-}
+// Resolve the native core from Maven Central; no bundled repository may shadow it.
 
 android {
     namespace = "com.evenrealities.even_devices_native"
@@ -56,5 +45,5 @@ android {
 }
 
 dependencies {
-    implementation "com.evenrealities.devices:even-devices-native-android:0.1.0-beta.11"
+    implementation "com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14"
 }

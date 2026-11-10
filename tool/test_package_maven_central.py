@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -34,8 +35,11 @@ class CentralBundleTests(unittest.TestCase):
         self.root.joinpath("licenses").mkdir()
         self.root.joinpath("docs").mkdir()
         self.root.joinpath("docs/NATIVE_SDK.md").write_text("# Native SDK\nUse the authorized native connection API.\n")
-        for name in ("LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "licenses/flutter_ezw_ble_LICENSE"):
+        for name in ("LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "licenses/flutter_ezw_ble_LICENSE", "licenses/flutter_ezw_utils_LICENSE", "licenses/liblc3_LICENSE"):
             self.root.joinpath(name).write_text("Audited notice: " + name)
+        self.root.joinpath("licenses/flutter_ezw_utils_LICENSE").write_bytes(
+            self.root.joinpath("licenses/flutter_ezw_ble_LICENSE").read_bytes())
+        self.write_source_bundle()
         self.write_aar()
         self.root.joinpath(RELATIVE / (STEM + ".pom")).write_text(f'''<?xml version="1.0"?>
 <project xmlns="{central.MAVEN_NS}">
@@ -51,11 +55,39 @@ class CentralBundleTests(unittest.TestCase):
         self.refresh_manifest()
         self.output = self.root / "build/central/unsigned"
 
+    def write_source_bundle(self):
+        """Use real Git objects so the source classifier proves commit identity."""
+        repo = Path(self.temporary.name) / "source"
+        subprocess.run(["git", "init", "-q", "-b", "main", str(repo)], check=True)
+        git = ["git", "-C", str(repo)]
+        src = repo / "native/android/src/main/kotlin/com/evenrealities/devices/EvenDevicesAndroidBle.kt"
+        src.parent.mkdir(parents=True)
+        src.write_text("package com.evenrealities.devices\nclass EvenDevicesAndroidBle")
+        shared = repo / "native/ios/Sources/EvenLC3"
+        shared.mkdir(parents=True)
+        (shared / "even_lc3.c").write_text("/* fixture */")
+        subprocess.run(git + ["add", "."], check=True)
+        subprocess.run(git + ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.org",
+                              "-c", "commit.gpgsign=false", "commit", "-qm", "fixture"], check=True)
+        commit = subprocess.check_output(git + ["rev-parse", "HEAD"], text=True).strip()
+        (self.root / "source").mkdir()
+        (self.root / "build_records").mkdir()
+        bundle = repo.parent / "native-sdk.bundle"
+        subprocess.run(git + ["bundle", "create", str(bundle), "main"], check=True)
+        with tarfile.open(self.root / f"source/native-sdk-{VERSION}.tar.gz", "w:gz") as archive:
+            archive.add(bundle, arcname=bundle.name)
+        (self.root / "build_records/android.json").write_text(json.dumps({
+            "source_commit": commit, "working_tree_dirty": False,
+            "coordinate": f"{central.GROUP}:{central.ARTIFACT}:{VERSION}",
+        }))
+
     def write_aar(self, extra=None):
         """Fixture class and notice layout models the already built AAR."""
         entries = {
             "com/evenrealities/devices/EvenDevicesAndroidBle.class": b"class fixture",
             "META-INF/even-devices-LICENSE.txt": self.root.joinpath("LICENSE").read_bytes(),
+            "META-INF/THIRD_PARTY_NOTICES.md": b"flutter_ezw_ble / flutter_ezw_utils / liblc3",
+            "META-INF/licenses/liblc3_LICENSE": self.root.joinpath("licenses/liblc3_LICENSE").read_bytes(),
             "META-INF/even-devices-NOTICE.txt": self.root.joinpath("NOTICE").read_bytes(),
             "META-INF/licenses/flutter_ezw_ble_LICENSE": self.root.joinpath("licenses/flutter_ezw_ble_LICENSE").read_bytes(),
         }
@@ -87,7 +119,9 @@ class CentralBundleTests(unittest.TestCase):
     def refresh_manifest(self):
         """Only source artifacts and legal files are in the test audit inventory."""
         files = sorted(self.release.iterdir()) + [self.root / name for name in (
-            "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "licenses/flutter_ezw_ble_LICENSE"
+            "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "licenses/flutter_ezw_ble_LICENSE",
+            "licenses/flutter_ezw_utils_LICENSE", "licenses/liblc3_LICENSE",
+            "build_records/android.json", f"source/native-sdk-{VERSION}.tar.gz"
         )]
         self.root.joinpath("checksums.sha256").write_text("".join(
             f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(self.root).as_posix()}\n"
@@ -104,7 +138,7 @@ class CentralBundleTests(unittest.TestCase):
         self.assertFalse(record["upload_ready"])
         self.assertFalse(record["signed"])
         self.assertIsNone(record["signing_key"])
-        self.assertEqual(record["source_distribution"], "documentation-placeholder")
+        self.assertEqual(record["source_distribution"], "native-build-commit")
         self.assertIn("NOT UPLOAD-READY", record["notice"])
         self.assertIn("-unsigned.zip", record["bundle"])
         with zipfile.ZipFile(output / record["bundle"]) as archive:
@@ -128,12 +162,22 @@ class CentralBundleTests(unittest.TestCase):
                 for algorithm in central.HASHES:
                     self.assertEqual(archive.read(prefix + name + "." + algorithm).decode().strip(), hashlib.new(algorithm, archive.read(prefix + name)).hexdigest())
             with zipfile.ZipFile(io.BytesIO(archive.read(prefix + STEM + "-sources.jar"))) as sources:
-                self.assertIn(b"does not contain implementation source code", sources.read("README.md"))
+                self.assertIn(b"class EvenDevicesAndroidBle", sources.read("com/evenrealities/devices/EvenDevicesAndroidBle.kt"))
                 self.assertIn("LICENSE", sources.namelist())
             with zipfile.ZipFile(io.BytesIO(archive.read(prefix + STEM + "-javadoc.jar"))) as docs:
                 self.assertIn(b"Native SDK", docs.read("index.html"))
         self.assertEqual(record["bundle_sha256"], hashlib.sha256((output / record["bundle"]).read_bytes()).hexdigest())
         self.assertEqual(original, {path.name: path.read_bytes() for path in self.release.iterdir()})
+
+    def test_source_revision_mismatch_prevents_packaging(self):
+        path = self.root / "build_records/android.json"
+        record = json.loads(path.read_text())
+        record["source_commit"] = "0" * 40
+        path.write_text(json.dumps(record))
+        self.refresh_manifest()
+        with self.assertRaisesRegex(central.BundleError, "source bundle commit"):
+            self.package()
+        self.assertFalse(self.output.exists())
 
     def test_default_version_and_bad_coordinates(self):
         self.assertEqual(central.default_version(self.root), VERSION)

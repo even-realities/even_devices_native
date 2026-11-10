@@ -27,6 +27,8 @@ void main() {
   Object? historyError;
   String? clipboard;
   Object? scanError;
+  const firmwarePicker = MethodChannel('even_devices_native_example/firmware');
+  final firmware = Uint8List.fromList([0, 1, 128, 255]);
 
   setUp(() {
     calls.clear();
@@ -35,6 +37,8 @@ void main() {
     historyError = null;
     clipboard = null;
     scanError = null;
+    messenger.setMockMethodCallHandler(firmwarePicker,
+        (call) async => {'name': 'local-test.bin', 'bytes': firmware});
     messenger.setMockMethodCallHandler(
         const MethodChannel(DeviceHistoryStore.channelName), (call) async {
       historyCalls.add(call);
@@ -55,6 +59,10 @@ void main() {
         const MethodChannel(EvenDevicesNative.methodChannelName), (call) async {
       calls.add(call);
       if (call.method == 'requestBluetoothPermissions') return true;
+      if (call.method == 'startOta') return 51;
+      if (call.method == 'executeEvenHubCommand') {
+        return {'status': 'completed'};
+      }
       if (call.method == 'scan' && scanError != null) throw scanError!;
       return null;
     });
@@ -70,6 +78,7 @@ void main() {
   });
 
   tearDown(() {
+    messenger.setMockMethodCallHandler(firmwarePicker, null);
     messenger.setMockMethodCallHandler(
         const MethodChannel(DeviceHistoryStore.channelName), null);
     messenger.setMockMethodCallHandler(
@@ -195,7 +204,73 @@ void main() {
   }
 
   testWidgets(
-      'launch separates four sections and waits for manual initialization',
+      'OTA waits for manual start and preserves version readback across tabs',
+      (tester) async {
+    await launch(tester);
+    await tab(tester, 'OTA');
+    await tester.tap(find.text('选择固件 .bin'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+        find.byKey(const ValueKey('ota-version')), '2.4.1.4');
+    expect(
+        tester
+            .widget<FilledButton>(find.widgetWithText(FilledButton, '开始升级'))
+            .onPressed,
+        isNull);
+    await initialize(tester);
+    await ready(tester);
+    // Account replacement clears the old file selection. A new pick alone must
+    // never start an update, even when both endpoints are now ready.
+    await tester.tap(find.text('选择固件 .bin'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+        find.byKey(const ValueKey('ota-version')), '2.4.1.4');
+    await tester.pump();
+    expect(calls.where((c) => c.method == 'startOta'), isEmpty);
+    await tester.tap(find.text('开始升级'));
+    await tester.pumpAndSettle();
+    expect(calls.last.method, 'startOta');
+    expect(calls.last.arguments,
+        {'firmware': firmware, 'targetVersion': '2.4.1.4'});
+    const owner = {
+      'type': 'ota',
+      'namespace': 'native-demo',
+      'sn': sn,
+      'generation': 10,
+      'operation': 51
+    };
+    await tab(tester, '日志');
+    await event(
+        tester, {...owner, 'phase': 'transportCompleted', 'progress': 1.0});
+    await g2(tester, 'disconnected');
+    await tab(tester, 'OTA');
+    expect(find.text('传输完成，等待重连验版'), findsOneWidget);
+    expect(find.text('双腿目标版本已确认'), findsNothing);
+    // Reboot may revoke READY. Cancel remains bound to the admitted operation.
+    await tester.tap(find.text('取消升级'));
+    await tester.pump();
+    expect(calls.last.method, 'cancelOta');
+    expect(calls.last.arguments, {'operationId': 51});
+    await event(tester, {...owner, 'operation': 50, 'phase': 'succeeded'});
+    expect(find.text('双腿目标版本已确认'), findsNothing);
+    await event(tester, {
+      ...owner,
+      'phase': 'failed',
+      'failure': 'versionMismatch',
+      'leftVersion': '2.4.1.4',
+      'rightVersion': '2.4.1.3'
+    });
+    expect(find.text('设备版本与目标不匹配'), findsOneWidget);
+    expect(find.text('右腿回读版本：2.4.1.3'), findsOneWidget);
+    expect(
+        tester
+            .widget<OutlinedButton>(find.widgetWithText(OutlinedButton, '取消升级'))
+            .onPressed,
+        isNull);
+    await retire(tester);
+  });
+
+  testWidgets('launch separates sections and waits for manual initialization',
       (tester) async {
     await launch(tester);
     expect(find.text('发现附近的眼镜'), findsOneWidget);
@@ -330,6 +405,107 @@ void main() {
         otherSn);
     await g2(tester, 'ready', target: otherSn, generation: 12);
     expect(find.text('G2 READY'), findsOneWidget);
+    await retire(tester);
+  });
+
+  testWidgets(
+      'microphone forwards controls and coalesces binary audio counters',
+      (tester) async {
+    await launch(tester);
+    await initialize(tester);
+    await ready(tester);
+    await tab(tester, 'EvenHub');
+    await hub(tester, 'active');
+    final start = find.byKey(const ValueKey('evenhub-microphone-start'));
+    await tester.ensureVisible(start);
+    await tester.pumpAndSettle();
+    await tester.tap(start);
+    await tester.pumpAndSettle();
+    expect(calls.last.arguments, {
+      'command': 'audioControl',
+      'parameters': {'enabled': true},
+    });
+    final audio = <String, Object?>{
+      'type': 'evenHub',
+      'namespace': 'native-demo',
+      'sn': sn,
+      'generation': 10,
+      'phase': 'input',
+      'event': 'audioEvent',
+      'details': {
+        'audioPcm': Uint8List.fromList([1, 0, 2, 0]),
+        'sampleRate': 16000,
+        'channels': 1,
+        'bitsPerSample': 16,
+        'source': 'glasses',
+        'speakerRole': 'self',
+        'direction': -1,
+      },
+    };
+    await event(tester, {...audio, 'generation': 9});
+    await event(tester, audio);
+    await event(tester, audio);
+    expect(find.text('2 帧 · 8 PCM 字节'), findsNothing);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('2 帧 · 8 PCM 字节'), findsOneWidget);
+    expect(find.text('01 00 02 00'), findsOneWidget);
+    await event(tester, {
+      ...audio,
+      'details': {
+        ...(audio['details'] as Map<String, Object?>),
+        'audioPcm': Uint8List.fromList(List.generate(64, (i) => 255 - i)),
+      }
+    });
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('最近一帧 · 64 字节 · 显示前 32 字节'), findsOneWidget);
+    final preview = tester
+        .widget<Text>(find.byKey(const ValueKey('evenhub-audio-hex')))
+        .data!;
+    expect(preview.split(' '), hasLength(32));
+    expect(preview, startsWith('FF FE FD'));
+    expect(preview, endsWith('E2 E1 E0'));
+    final stop = find.byKey(const ValueKey('evenhub-microphone-stop'));
+    await tester.ensureVisible(stop);
+    await tester.pumpAndSettle();
+    await tester.tap(stop);
+    await tester.pumpAndSettle();
+    expect(calls.last.arguments, {
+      'command': 'audioControl',
+      'parameters': {'enabled': false},
+    });
+    await event(tester, audio);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('暂无音频字节'), findsOneWidget);
+    expect(find.text('0 帧 · 0 PCM 字节'), findsOneWidget);
+    await g2(tester, 'disconnected');
+    expect(find.text('0 帧 · 0 PCM 字节'), findsOneWidget);
+    await retire(tester);
+  });
+
+  testWidgets('late microphone completion cannot restore a disconnected owner',
+      (tester) async {
+    await launch(tester);
+    await initialize(tester);
+    await ready(tester);
+    await tab(tester, 'EvenHub');
+    await hub(tester, 'active');
+    final pending = Completer<Object?>();
+    messenger.setMockMethodCallHandler(
+        const MethodChannel(EvenDevicesNative.methodChannelName), (call) async {
+      calls.add(call);
+      if (call.method == 'executeEvenHubCommand') return pending.future;
+      return null;
+    });
+    final start = find.byKey(const ValueKey('evenhub-microphone-start'));
+    await tester.ensureVisible(start);
+    await tester.pumpAndSettle();
+    await tester.tap(start);
+    await tester.pump();
+    await g2(tester, 'disconnected');
+    pending.complete({'status': 'completed'});
+    await tester.pumpAndSettle();
+    expect(find.text('未开启'), findsOneWidget);
+    expect(find.text('已开启，等待音频'), findsNothing);
     await retire(tester);
   });
 

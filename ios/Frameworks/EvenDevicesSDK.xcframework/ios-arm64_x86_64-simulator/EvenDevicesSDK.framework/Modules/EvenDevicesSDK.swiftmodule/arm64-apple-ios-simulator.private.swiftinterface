@@ -104,7 +104,7 @@ public enum G2BusinessCommandError : Swift::Error, Swift::Equatable {
   public typealias EventHandler = (EvenDevicesSDK::G2Event) -> Swift::Void
   public typealias BusinessEventHandler = (EvenDevicesSDK::G2BusinessEvent) -> Swift::Void
   public typealias EvenHubEventHandler = (EvenDevicesSDK::G2EvenHubEvent) -> Swift::Void
-  public init(namespace: Swift::String, licenseBundle: EvenDevicesSDK::EnterpriseLicenseBundle, autoReconnect: Swift::Bool = false, onEvent: @escaping EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::EventHandler, onBusinessEvent: EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::BusinessEventHandler? = nil, onEvenHubEvent: EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::EvenHubEventHandler? = nil)
+  public init(namespace: Swift::String, licenseBundle: EvenDevicesSDK::EnterpriseLicenseBundle, autoReconnect: Swift::Bool = false, onEvent: @escaping EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::EventHandler, onBusinessEvent: EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::BusinessEventHandler? = nil, onEvenHubEvent: EvenDevicesSDK::EvenDevicesG2SDK.EvenDevicesSDK::EvenHubEventHandler? = nil, onOtaEvent: ((EvenDevicesSDK::G2OtaEvent) -> Swift::Void)? = nil)
   @objc deinit
   final public func updateLicenses(_ bundle: EvenDevicesSDK::EnterpriseLicenseBundle)
   final public func scan()
@@ -131,6 +131,12 @@ extension EvenDevicesSDK::EvenDevicesG2SDK : CoreBluetooth::CBPeripheralDelegate
   @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didUpdateNotificationStateFor characteristic: CoreBluetooth::CBCharacteristic, error: (any Swift::Error)?)
   @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didWriteValueFor characteristic: CoreBluetooth::CBCharacteristic, error: (any Swift::Error)?)
   @objc final public func peripheral(_ peripheral: CoreBluetooth::CBPeripheral, didUpdateValueFor characteristic: CoreBluetooth::CBCharacteristic, error: (any Swift::Error)?)
+}
+extension EvenDevicesSDK::EvenDevicesG2SDK {
+  @discardableResult
+  final public func startOta(firmware: Foundation::Data, targetVersion: Swift::String) throws -> Swift::Int64
+  final public func cancelOta(operationId: Swift::Int64)
+  @objc final public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CoreBluetooth::CBPeripheral)
 }
 public enum G2BusinessService : Swift::UInt8 {
   case notification
@@ -170,6 +176,27 @@ public struct G2EvenHubEvent {
   public let heartbeatCount: Swift::UInt32
   public let details: [Swift::String : Any]
 }
+public enum G2OtaError : Swift::String, Swift::Error {
+  case notReady, busy, invalidFirmware, invalidTargetVersion
+  public init?(rawValue: Swift::String)
+  public typealias RawValue = Swift::String
+  public var rawValue: Swift::String {
+    get
+  }
+}
+public struct G2OtaEvent {
+  public let sn: Swift::String
+  public let generation: Swift::UInt64
+  public let operation: Swift::Int64
+  public let endpoint: Swift::String?
+  public let session: Swift::UInt64?
+  public let attempt: Swift::UInt64?
+  public let leftVersion: Swift::String?
+  public let rightVersion: Swift::String?
+  public let phase: Swift::String
+  public let progress: Swift::Double
+  public let failure: Swift::String?
+}
 extension EvenDevicesSDK::EnterpriseLicenseError : Swift::Hashable {}
 extension EvenDevicesSDK::G2Side : Swift::RawRepresentable {}
 extension EvenDevicesSDK::G2Phase : Swift::Equatable {}
@@ -185,3 +212,6 @@ extension EvenDevicesSDK::G2BusinessService : Swift::RawRepresentable {}
 extension EvenDevicesSDK::G2EvenHubError : Swift::Equatable {}
 extension EvenDevicesSDK::G2EvenHubError : Swift::Hashable {}
 extension EvenDevicesSDK::G2EvenHubError : Swift::RawRepresentable {}
+extension EvenDevicesSDK::G2OtaError : Swift::Equatable {}
+extension EvenDevicesSDK::G2OtaError : Swift::Hashable {}
+extension EvenDevicesSDK::G2OtaError : Swift::RawRepresentable {}

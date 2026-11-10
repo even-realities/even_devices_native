@@ -3,13 +3,11 @@
 The Android and iOS SDKs can be used directly in native applications.
 Both SDKs own license parsing, exact SN selection, enterprise authorization,
 two-temple business authentication, time synchronization and Even Hub commands.
-They do not require the Flutter runtime. The iOS SwiftPM release is `0.1.0-beta.12`.
+They do not require the Flutter runtime. Both published native dependencies are pinned to beta.14. The Flutter plugin uses Maven Central on Android and SwiftPM on iOS.
 
 ## Android — Maven Central
 
-**Publication pending:** the company Central account, namespace verification
-and release signing key must be configured first. The coordinate below is the
-planned public coordinate; it is not yet available from `mavenCentral()`.
+**Published:** `com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14` is available from Maven Central.
 
 ```kotlin
 // settings.gradle.kts: merge into your existing dependency repositories.
@@ -21,17 +19,14 @@ dependencyResolutionManagement {
 }
 ```
 
-After the version is published, add to `app/build.gradle.kts`:
+Add to `app/build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.evenrealities.devices:even-devices-native-android:0.1.0-beta.11")
+    implementation("com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14")
 }
 ```
 
-For local evaluation today, add this checkout's `android/maven` directory as a
-Maven repository, keeping `google()` and `mavenCentral()` for transitive dependencies.
-Use its absolute path in `maven { url = uri("/path/to/flutter_enterprise_sdk/android/maven") }`.
 Minimum Android version: API 21; the library uses Java/Kotlin 17 bytecode.
 
 The host requests Bluetooth permissions before using the SDK. On Android 12+,
@@ -76,22 +71,20 @@ Native events confirm page activation and renewals; request submission does not
 prove display success. Call `sdk.closeEvenHub()` when finished, then
 `sdk.disconnectG2(left, right)` or `sdk.reset()` on teardown.
 
-The Maven sources JAR is explicitly a documentation placeholder for this binary
-distribution. It does not contain implementation sources. The documentation JAR
-contains this guide; neither is advertised as generated API documentation.
+The Maven sources JAR contains Android implementation sources from the native build commit. The [source bundle and build instructions](../PROVENANCE.md) cover both platforms, including the required codec inputs. The documentation JAR contains this guide.
 
 ## iOS — Swift Package Manager
 
 In Xcode, choose **File → Add Package Dependencies**, enter
 `https://github.com/even-realities/flutter_enterprise_sdk.git`, choose exact version
-`0.1.0-beta.12`, and add the **EvenDevicesSDK** product to your app target.
+`0.1.0-beta.14`, and add the **EvenDevicesSDK** product to your app target.
 
 For a Swift package consumer:
 
 ```swift
 .package(
     url: "https://github.com/even-realities/flutter_enterprise_sdk.git",
-    exact: "0.1.0-beta.12"
+    exact: "0.1.0-beta.14"
 )
 ```
 
@@ -135,20 +128,37 @@ authorization. After whole-device READY, use
 `try sdk.openEvenHubTextPage(text: "Hello Even Hub")`; finish with
 `try sdk.closeEvenHub()` and `sdk.disconnect()`.
 
-## G2 firmware updates on iOS
+## Even Hub microphone audio
 
-Subscribe to `onOtaEvent` during initialization. Once both temples are READY,
-pass the complete G2 EVENOTA firmware as `Data` and its expected version:
+After both temples reach READY and the Even Hub page is active, enable the glasses microphone. At least one current endpoint must support notifications on the STREAM service (6450 / 6402). Wait for the command result. Audio delivery begins after the firmware acknowledges enable.
+
+| Host | Enable on the current page | Read in the SDK’s `onEvenHubEvent` callback |
+|---|---|---|
+| Kotlin | `sdk.executeEvenHubCommand("audioControl", mapOf("enabled" to true)) { result -> /* handle result */ }` | For `event.event == "audioEvent"`, read `event.details["audioPcm"] as? ByteArray`. |
+| Swift | `sdk.executeEvenHubCommand(commandName: "audioControl", parameters: ["enabled": true]) { result in /* handle result */ }` | For `event.event == "audioEvent"`, read `event.details["audioPcm"] as? Data`. |
+| Flutter | `await sdk.executeEvenHubCommand(EvenHubCommand.audioControl, parameters: {"enabled": true});` | Listen to `sdk.events`; `event.audioPcm` carries the native bytes as a `Uint8List` on `audioEvent`. |
+
+The native SDK decodes each 40-byte LC3 frame into 160 mono samples at 16 kHz and applies the Even Hub host’s default automatic gain control. Output uses signed little-endian PCM16. A tagged five-frame packet produces 1,600 bytes. For tagged packets, the host-compatible speaker smoother emits a normalized silence block on the first packet, then the preceding block on each subsequent packet. Events carry `source = glasses`, `speakerRole` (`self`, `other`, or `unknown`), and the current signed `direction` when provided by firmware. Untagged packets carry `unknown` and omit direction.
+
+Send `audioControl` with `enabled: false` to stop delivery. Closing the page or disconnecting also clears the stream and its decoder history. This API covers the glasses microphone and the default PCM path. The beta.14 release includes native PCM delivery.
+
+## G2 firmware updates
+
+For OTA, use the beta.14 Maven Central coordinate above or pin the iOS Swift package to `0.1.0-beta.14`. Subscribe to `onOtaEvent` during SDK initialization. After both temples reach READY, provide the complete G2 EVENOTA firmware bytes and the target firmware version from the release.
+
+```kotlin
+val operation = sdk.startOta(firmware, targetVersion) // ByteArray, String
+// If the user cancels this operation:
+sdk.cancelOta(operation)
+```
 
 ```swift
-let operation = try sdk.startOta(firmware: firmware, targetVersion: targetVersion)
-// If the user requests cancellation:
+let operation = try sdk.startOta(firmware: firmware, targetVersion: targetVersion) // Data, String
+// If the user cancels this operation:
 sdk.cancelOta(operationId: operation)
 ```
 
-Match events to the operation ID. `transportCompleted` confirms transfer;
-`succeeded` requires matching version readback from both temples after reconnection.
-A physical upgrade with this release has not yet been verified.
+Match events to the returned operation ID. `transportCompleted` indicates that both transfers finished. The SDK checks both installed versions after reconnection before emitting `succeeded`. A mismatch or missing readback leaves the installation unverified.
 
 ## Authorization and scope
 

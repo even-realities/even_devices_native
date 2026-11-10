@@ -69,8 +69,18 @@ class EvenDevicesEvent {
     this.failure,
     this.success,
     this.operation,
+    this.progress,
+    this.leftVersion,
+    this.rightVersion,
     this.event,
     this.heartbeatCount,
+    this.audioPcm,
+    this.sampleRate,
+    this.channels,
+    this.bitsPerSample,
+    this.source,
+    this.speakerRole,
+    this.direction,
     this.devices = const [],
   });
 
@@ -89,11 +99,33 @@ class EvenDevicesEvent {
   final bool? success;
   final int? operation;
 
+  /// Fraction of firmware transfer reported by native. Only the final native
+  /// verification phase establishes that both legs run the requested version.
+  final double? progress;
+
+  /// Firmware versions actually read back from the device after its reconnect.
+  final String? leftVersion;
+  final String? rightVersion;
+
   /// Native-decoded EvenHub input, never inferred from a raw transport payload.
   final String? event;
 
   /// Number of page-lease acknowledgements confirmed by the native owner.
   final int? heartbeatCount;
+
+  /// Native-decoded signed PCM16 little-endian bytes. Flutter never decodes LC3.
+  /// A read-only view avoids another copy on this high-frequency binary path.
+  final Uint8List? audioPcm;
+  final int? sampleRate;
+  final int? channels;
+  final int? bitsPerSample;
+
+  /// Native provenance; a glasses microphone does not establish a speaker role.
+  final String? source;
+  final String? speakerRole;
+
+  /// Signed native direction metadata; absence never invents a speaker role.
+  final int? direction;
   final List<G2DiscoveredEndpoint> devices;
 
   /// Preserve unknown categories/phases for forward compatibility.
@@ -123,12 +155,39 @@ class EvenDevicesEvent {
       return field as int?;
     }
 
+    final progress = fields['type'] == 'ota' ? fields['progress'] : null;
+    if (progress != null &&
+        (progress is! num ||
+            !progress.isFinite ||
+            progress < 0 ||
+            progress > 1)) {
+      throw const FormatException('Invalid native OTA progress');
+    }
     final success = fields['success'];
     final devices = fields['devices'];
     if ((success != null && success is! bool) ||
         (devices != null && devices is! List)) {
       throw const FormatException('Invalid native SDK event values');
     }
+    final isAudio =
+        fields['type'] == 'evenHub' && fields['event'] == 'audioEvent';
+    final audio = isAudio ? fields['details'] : null;
+    // Fail closed on broken binary/format contracts rather than letting a host
+    // mistake compressed or malformed bytes for playable microphone PCM.
+    if (isAudio &&
+        (audio is! Map ||
+            audio['audioPcm'] is! Uint8List ||
+            (audio['audioPcm'] as Uint8List).isEmpty ||
+            (audio['audioPcm'] as Uint8List).length.isOdd ||
+            audio['sampleRate'] != 16000 ||
+            audio['channels'] != 1 ||
+            audio['bitsPerSample'] != 16 ||
+            audio['source'] is! String ||
+            audio['speakerRole'] is! String ||
+            (audio['direction'] != null && audio['direction'] is! int))) {
+      throw const FormatException('Invalid native EvenHub PCM event');
+    }
+    final audioFields = audio as Map?;
     return EvenDevicesEvent._(
       type: fields['type']! as String,
       namespace: string('namespace'),
@@ -142,8 +201,18 @@ class EvenDevicesEvent {
       failure: string('failure'),
       success: success as bool?,
       operation: integer('operation'),
+      progress: (progress as num?)?.toDouble(),
+      leftVersion: fields['type'] == 'ota' ? string('leftVersion') : null,
+      rightVersion: fields['type'] == 'ota' ? string('rightVersion') : null,
       event: string('event'),
       heartbeatCount: integer('heartbeatCount'),
+      audioPcm: (audioFields?['audioPcm'] as Uint8List?)?.asUnmodifiableView(),
+      sampleRate: audioFields?['sampleRate'] as int?,
+      channels: audioFields?['channels'] as int?,
+      bitsPerSample: audioFields?['bitsPerSample'] as int?,
+      source: audioFields?['source'] as String?,
+      speakerRole: audioFields?['speakerRole'] as String?,
+      direction: audioFields?['direction'] as int?,
       devices: List.unmodifiable(
         (devices as List? ?? const []).map(G2DiscoveredEndpoint.fromNative),
       ),

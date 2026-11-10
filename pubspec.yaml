@@ -1,6 +1,6 @@
 name: even_devices_native
 description: Flutter adapter for the Flutter-free Even G2 Android and iOS SDKs.
-version: 0.1.0-beta.11
+version: 0.1.0-beta.14
 homepage: https://www.evenrealities.com
 repository: https://github.com/even-realities/flutter_enterprise_sdk
 documentation: https://hub.evenrealities.com/docs/get-started/overview
@@ -8,7 +8,7 @@ publish_to: none
 
 environment:
   sdk: ^3.5.3
-  flutter: ">=3.22.0"
+  flutter: ">=3.32.0"
 
 dependencies:
   flutter:

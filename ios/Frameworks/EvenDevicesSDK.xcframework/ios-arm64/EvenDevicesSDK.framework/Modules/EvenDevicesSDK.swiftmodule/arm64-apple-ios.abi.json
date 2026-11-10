@@ -3806,7 +3806,7 @@
           {
             "kind": "Constructor",
             "name": "init",
-            "printedName": "init(namespace:licenseBundle:autoReconnect:onEvent:onBusinessEvent:onEvenHubEvent:)",
+            "printedName": "init(namespace:licenseBundle:autoReconnect:onEvent:onBusinessEvent:onEvenHubEvent:onOtaEvent:)",
             "children": [
               {
                 "kind": "TypeNominal",
@@ -3904,11 +3904,38 @@
                 ],
                 "hasDefaultArg": true,
                 "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "((EvenDevicesSDK.G2OtaEvent) -> ())?",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(EvenDevicesSDK.G2OtaEvent) -> ()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Void",
+                        "printedName": "()"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "G2OtaEvent",
+                        "printedName": "EvenDevicesSDK.G2OtaEvent",
+                        "usr": "s:14EvenDevicesSDK10G2OtaEventV"
+                      }
+                    ]
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
               }
             ],
             "declKind": "Constructor",
-            "usr": "s:14EvenDevicesSDK0ab2G2C0C9namespace13licenseBundle13autoReconnect7onEvent0j8BusinessK00ja3HubK0ACSS_AA017EnterpriseLicenseG0VSbyAA0dK0VcyAA0dlK0VcSgyAA0damK0VcSgtcfc",
-            "mangledName": "$s14EvenDevicesSDK0ab2G2C0C9namespace13licenseBundle13autoReconnect7onEvent0j8BusinessK00ja3HubK0ACSS_AA017EnterpriseLicenseG0VSbyAA0dK0VcyAA0dlK0VcSgyAA0damK0VcSgtcfc",
+            "usr": "s:14EvenDevicesSDK0ab2G2C0C9namespace13licenseBundle13autoReconnect7onEvent0j8BusinessK00ja3HubK00j3OtaK0ACSS_AA017EnterpriseLicenseG0VSbyAA0dK0VcyAA0dlK0VcSgyAA0damK0VcSgyAA0dnK0VcSgtcfc",
+            "mangledName": "$s14EvenDevicesSDK0ab2G2C0C9namespace13licenseBundle13autoReconnect7onEvent0j8BusinessK00ja3HubK00j3OtaK0ACSS_AA017EnterpriseLicenseG0VSbyAA0dK0VcyAA0dlK0VcSgyAA0damK0VcSgyAA0dnK0VcSgtcfc",
             "moduleName": "EvenDevicesSDK",
             "declAttributes": [
               "AccessControl"
@@ -4893,6 +4920,103 @@
             ],
             "isFromExtension": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "startOta",
+            "printedName": "startOta(firmware:targetVersion:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int64",
+                "printedName": "Swift.Int64",
+                "usr": "s:s5Int64V"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:14EvenDevicesSDK0ab2G2C0C8startOta8firmware13targetVersions5Int64V10Foundation4DataV_SStKF",
+            "mangledName": "$s14EvenDevicesSDK0ab2G2C0C8startOta8firmware13targetVersions5Int64V10Foundation4DataV_SStKF",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "DiscardableResult",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "cancelOta",
+            "printedName": "cancelOta(operationId:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int64",
+                "printedName": "Swift.Int64",
+                "usr": "s:s5Int64V"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:14EvenDevicesSDK0ab2G2C0C9cancelOta11operationIdys5Int64V_tF",
+            "mangledName": "$s14EvenDevicesSDK0ab2G2C0C9cancelOta11operationIdys5Int64V_tF",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "peripheralIsReady",
+            "printedName": "peripheralIsReady(toSendWriteWithoutResponse:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@EvenDevicesSDK@objc(cs)EvenDevicesG2SDK(im)peripheralIsReadyToSendWriteWithoutResponse:",
+            "mangledName": "$s14EvenDevicesSDK0ab2G2C0C17peripheralIsReady26toSendWriteWithoutResponseySo12CBPeripheralC_tF",
+            "moduleName": "EvenDevicesSDK",
+            "objc_name": "peripheralIsReadyToSendWriteWithoutResponse:",
+            "declAttributes": [
+              "Final",
+              "ObjC",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Class",
@@ -4974,6 +5098,30 @@
             "mangledName": "$sSH"
           }
         ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "EvenDevicesSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "EvenLC3",
+        "printedName": "EvenLC3",
+        "declKind": "Import",
+        "moduleName": "EvenDevicesSDK",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "EvenDevicesSDK"
       },
       {
         "kind": "Import",
@@ -6556,6 +6704,947 @@
         "moduleName": "EvenDevicesSDK"
       },
       {
+        "kind": "TypeDecl",
+        "name": "G2OtaError",
+        "printedName": "G2OtaError",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "notReady",
+            "printedName": "notReady",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(EvenDevicesSDK.G2OtaError.Type) -> EvenDevicesSDK.G2OtaError",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "G2OtaError",
+                    "printedName": "EvenDevicesSDK.G2OtaError",
+                    "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "EvenDevicesSDK.G2OtaError.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "G2OtaError",
+                        "printedName": "EvenDevicesSDK.G2OtaError",
+                        "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:14EvenDevicesSDK10G2OtaErrorO8notReadyyA2CmF",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO8notReadyyA2CmF",
+            "moduleName": "EvenDevicesSDK"
+          },
+          {
+            "kind": "Var",
+            "name": "busy",
+            "printedName": "busy",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(EvenDevicesSDK.G2OtaError.Type) -> EvenDevicesSDK.G2OtaError",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "G2OtaError",
+                    "printedName": "EvenDevicesSDK.G2OtaError",
+                    "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "EvenDevicesSDK.G2OtaError.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "G2OtaError",
+                        "printedName": "EvenDevicesSDK.G2OtaError",
+                        "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:14EvenDevicesSDK10G2OtaErrorO4busyyA2CmF",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO4busyyA2CmF",
+            "moduleName": "EvenDevicesSDK"
+          },
+          {
+            "kind": "Var",
+            "name": "invalidFirmware",
+            "printedName": "invalidFirmware",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(EvenDevicesSDK.G2OtaError.Type) -> EvenDevicesSDK.G2OtaError",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "G2OtaError",
+                    "printedName": "EvenDevicesSDK.G2OtaError",
+                    "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "EvenDevicesSDK.G2OtaError.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "G2OtaError",
+                        "printedName": "EvenDevicesSDK.G2OtaError",
+                        "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:14EvenDevicesSDK10G2OtaErrorO15invalidFirmwareyA2CmF",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO15invalidFirmwareyA2CmF",
+            "moduleName": "EvenDevicesSDK"
+          },
+          {
+            "kind": "Var",
+            "name": "invalidTargetVersion",
+            "printedName": "invalidTargetVersion",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(EvenDevicesSDK.G2OtaError.Type) -> EvenDevicesSDK.G2OtaError",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "G2OtaError",
+                    "printedName": "EvenDevicesSDK.G2OtaError",
+                    "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "EvenDevicesSDK.G2OtaError.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "G2OtaError",
+                        "printedName": "EvenDevicesSDK.G2OtaError",
+                        "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:14EvenDevicesSDK10G2OtaErrorO20invalidTargetVersionyA2CmF",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO20invalidTargetVersionyA2CmF",
+            "moduleName": "EvenDevicesSDK"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(rawValue:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "EvenDevicesSDK.G2OtaError?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "G2OtaError",
+                    "printedName": "EvenDevicesSDK.G2OtaError",
+                    "usr": "s:14EvenDevicesSDK10G2OtaErrorO"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:14EvenDevicesSDK10G2OtaErrorO8rawValueACSgSS_tcfc",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO8rawValueACSgSS_tcfc",
+            "moduleName": "EvenDevicesSDK",
+            "implicit": true,
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "rawValue",
+            "printedName": "rawValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaErrorO8rawValueSSvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO8rawValueSSvp",
+            "moduleName": "EvenDevicesSDK",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaErrorO8rawValueSSvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO8rawValueSSvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:14EvenDevicesSDK10G2OtaErrorO",
+        "mangledName": "$s14EvenDevicesSDK10G2OtaErrorO",
+        "moduleName": "EvenDevicesSDK",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "enumRawTypeName": "String",
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "RawRepresentable",
+            "printedName": "RawRepresentable",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "RawValue",
+                "printedName": "RawValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:SY",
+            "mangledName": "$sSY"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Error",
+            "printedName": "Error",
+            "usr": "s:s5ErrorP",
+            "mangledName": "$ss5ErrorP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Sendable",
+            "printedName": "Sendable",
+            "usr": "s:s8SendableP",
+            "mangledName": "$ss8SendableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "SendableMetatype",
+            "printedName": "SendableMetatype",
+            "usr": "s:s16SendableMetatypeP",
+            "mangledName": "$ss16SendableMetatypeP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "G2OtaEvent",
+        "printedName": "G2OtaEvent",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "sn",
+            "printedName": "sn",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV2snSSvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV2snSSvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV2snSSvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV2snSSvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "generation",
+            "printedName": "generation",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UInt64",
+                "printedName": "Swift.UInt64",
+                "usr": "s:s6UInt64V"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV10generations6UInt64Vvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV10generations6UInt64Vvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UInt64",
+                    "printedName": "Swift.UInt64",
+                    "usr": "s:s6UInt64V"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV10generations6UInt64Vvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV10generations6UInt64Vvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "operation",
+            "printedName": "operation",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int64",
+                "printedName": "Swift.Int64",
+                "usr": "s:s5Int64V"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV9operations5Int64Vvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV9operations5Int64Vvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int64",
+                    "printedName": "Swift.Int64",
+                    "usr": "s:s5Int64V"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV9operations5Int64Vvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV9operations5Int64Vvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "endpoint",
+            "printedName": "endpoint",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV8endpointSSSgvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV8endpointSSSgvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV8endpointSSSgvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV8endpointSSSgvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "session",
+            "printedName": "session",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.UInt64?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UInt64",
+                    "printedName": "Swift.UInt64",
+                    "usr": "s:s6UInt64V"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV7sessions6UInt64VSgvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV7sessions6UInt64VSgvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.UInt64?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "UInt64",
+                        "printedName": "Swift.UInt64",
+                        "usr": "s:s6UInt64V"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV7sessions6UInt64VSgvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV7sessions6UInt64VSgvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "attempt",
+            "printedName": "attempt",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.UInt64?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UInt64",
+                    "printedName": "Swift.UInt64",
+                    "usr": "s:s6UInt64V"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV7attempts6UInt64VSgvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV7attempts6UInt64VSgvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.UInt64?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "UInt64",
+                        "printedName": "Swift.UInt64",
+                        "usr": "s:s6UInt64V"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV7attempts6UInt64VSgvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV7attempts6UInt64VSgvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "leftVersion",
+            "printedName": "leftVersion",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV11leftVersionSSSgvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV11leftVersionSSSgvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV11leftVersionSSSgvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV11leftVersionSSSgvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "rightVersion",
+            "printedName": "rightVersion",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV12rightVersionSSSgvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV12rightVersionSSSgvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV12rightVersionSSSgvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV12rightVersionSSSgvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "phase",
+            "printedName": "phase",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV5phaseSSvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV5phaseSSvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV5phaseSSvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV5phaseSSvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "progress",
+            "printedName": "progress",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV8progressSdvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV8progressSdvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Double",
+                    "printedName": "Swift.Double",
+                    "usr": "s:Sd"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV8progressSdvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV8progressSdvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "failure",
+            "printedName": "failure",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14EvenDevicesSDK10G2OtaEventV7failureSSSgvp",
+            "mangledName": "$s14EvenDevicesSDK10G2OtaEventV7failureSSSgvp",
+            "moduleName": "EvenDevicesSDK",
+            "declAttributes": [
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14EvenDevicesSDK10G2OtaEventV7failureSSSgvg",
+                "mangledName": "$s14EvenDevicesSDK10G2OtaEventV7failureSSSgvg",
+                "moduleName": "EvenDevicesSDK",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:14EvenDevicesSDK10G2OtaEventV",
+        "mangledName": "$s14EvenDevicesSDK10G2OtaEventV",
+        "moduleName": "EvenDevicesSDK",
+        "declAttributes": [
+          "AccessControl",
+          "RawDocComment"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "EvenDevicesSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "EvenDevicesSDK"
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "EvenDevicesSDK"
+      },
+      {
         "kind": "Import",
         "name": "Foundation",
         "printedName": "Foundation",
@@ -6567,455 +7656,777 @@
   },
   "ConstValues": [
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EnterpriseLicense.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EnterpriseLicense.swift",
       "kind": "IntegerLiteral",
       "offset": 5302,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "StringLiteral",
       "offset": 2450,
       "length": 6,
       "value": "\"8450\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "StringLiteral",
       "offset": 2491,
       "length": 6,
       "value": "\"8401\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "StringLiteral",
       "offset": 2532,
       "length": 6,
       "value": "\"8402\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "StringLiteral",
       "offset": 2584,
       "length": 6,
       "value": "\"8403\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "StringLiteral",
-      "offset": 2806,
+      "offset": 2714,
+      "length": 6,
+      "value": "\"6450\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "StringLiteral",
+      "offset": 2765,
+      "length": 6,
+      "value": "\"6402\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "StringLiteral",
+      "offset": 2814,
+      "length": 6,
+      "value": "\"1001\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "StringLiteral",
+      "offset": 2861,
+      "length": 6,
+      "value": "\"0001\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "StringLiteral",
+      "offset": 2909,
+      "length": 6,
+      "value": "\"0002\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "IntegerLiteral",
+      "offset": 3136,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "IntegerLiteral",
+      "offset": 3171,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "StringLiteral",
+      "offset": 3387,
       "length": 27,
       "value": "\"com.evenrealities.devices\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "StringLiteral",
-      "offset": 2845,
+      "offset": 3426,
       "length": 12,
       "value": "\"G2Business\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 3456,
+      "offset": 4037,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 3712,
+      "offset": 4293,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 3923,
+      "offset": 4504,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 4206,
+      "offset": 4787,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "Dictionary",
-      "offset": 4275,
+      "offset": 4856,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 4361,
+      "offset": 4942,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 4411,
+      "offset": 4992,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 4457,
+      "offset": 5038,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 4658,
+      "offset": 5239,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 4703,
+      "offset": 5284,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 5351,
+      "offset": 5932,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "Dictionary",
-      "offset": 5462,
+      "offset": 6043,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 5513,
+      "offset": 6094,
       "length": 1,
       "value": "1"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 5629,
+      "offset": 6210,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 9109,
+      "offset": 9798,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 24625,
+      "offset": 26466,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 26478,
+      "offset": 28762,
       "length": 1,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 31215,
+      "offset": 33963,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 31254,
+      "offset": 34002,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 31298,
+      "offset": 34046,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 31344,
+      "offset": 34092,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 31386,
+      "offset": 34134,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 31428,
+      "offset": 34176,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 31466,
+      "offset": 34214,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "IntegerLiteral",
-      "offset": 32219,
+      "offset": 34967,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
       "kind": "BooleanLiteral",
-      "offset": 32352,
+      "offset": 35100,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "BooleanLiteral",
+      "offset": 63366,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "Array",
+      "offset": 63448,
+      "length": 2,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "IntegerLiteral",
+      "offset": 63533,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "IntegerLiteral",
+      "offset": 63569,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "BooleanLiteral",
+      "offset": 63638,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "IntegerLiteral",
+      "offset": 63672,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "BooleanLiteral",
+      "offset": 63784,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "BooleanLiteral",
+      "offset": 63814,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "BooleanLiteral",
+      "offset": 63887,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "Dictionary",
+      "offset": 63938,
+      "length": 3,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/EvenDevicesG2SDK.swift",
+      "kind": "BooleanLiteral",
+      "offset": 80710,
+      "length": 4,
+      "value": "true"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AudioPcmProcessor.swift",
+      "kind": "FloatLiteral",
+      "offset": 336,
+      "length": 3,
+      "value": "1.0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AudioPcmProcessor.swift",
+      "kind": "Array",
+      "offset": 1840,
+      "length": 9,
+      "value": "[0, 0, 0]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AudioPcmProcessor.swift",
+      "kind": "Array",
+      "offset": 1880,
+      "length": 9,
+      "value": "[0, 0, 0]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AudioPcmProcessor.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1936,
+      "length": 10,
+      "value": "0x4170d2f1"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AudioPcmProcessor.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1975,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
       "kind": "IntegerLiteral",
       "offset": 253,
       "length": 4,
       "value": "0x80"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
       "kind": "IntegerLiteral",
       "offset": 305,
       "length": 1,
       "value": "4"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
       "kind": "IntegerLiteral",
       "offset": 4198,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2AuthenticationWire.swift",
       "kind": "BooleanLiteral",
       "offset": 4229,
       "length": 4,
       "value": "true"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
       "kind": "IntegerLiteral",
       "offset": 161,
       "length": 4,
       "value": "0x04"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
       "kind": "IntegerLiteral",
       "offset": 192,
       "length": 4,
       "value": "0x80"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
       "kind": "IntegerLiteral",
       "offset": 216,
       "length": 4,
       "value": "0xE0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2BusinessWire.swift",
       "kind": "Dictionary",
       "offset": 6835,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
       "kind": "IntegerLiteral",
       "offset": 4204,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
       "kind": "IntegerLiteral",
       "offset": 5271,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
       "kind": "IntegerLiteral",
       "offset": 5979,
       "length": 5,
       "value": "11417"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
       "kind": "BooleanLiteral",
       "offset": 20328,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubCommands.swift",
       "kind": "BooleanLiteral",
       "offset": 20499,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "StringLiteral",
       "offset": 1198,
       "length": 7,
       "value": "\"right\""
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "IntegerLiteral",
       "offset": 1713,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "IntegerLiteral",
       "offset": 1761,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "IntegerLiteral",
       "offset": 1802,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "BooleanLiteral",
       "offset": 2008,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "BooleanLiteral",
-      "offset": 2132,
+      "offset": 2214,
       "length": 5,
       "value": "false"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "IntegerLiteral",
-      "offset": 2814,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "Array",
-      "offset": 3400,
-      "length": 2,
-      "value": "[]"
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "IntegerLiteral",
-      "offset": 4308,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "IntegerLiteral",
-      "offset": 4559,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "Array",
-      "offset": 5445,
-      "length": 2,
-      "value": "[]"
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "Array",
-      "offset": 6368,
-      "length": 2,
-      "value": "[]"
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "StringLiteral",
-      "offset": 9919,
-      "length": 14,
-      "value": "\"disconnected\""
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
-      "kind": "StringLiteral",
-      "offset": 19518,
-      "length": 9,
-      "value": "\"pending\""
-    },
-    {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
       "kind": "Dictionary",
-      "offset": 23062,
+      "offset": 2272,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2ReconnectBackoff.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "BooleanLiteral",
+      "offset": 2297,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2979,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "Array",
+      "offset": 3565,
+      "length": 2,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "IntegerLiteral",
+      "offset": 4473,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "IntegerLiteral",
+      "offset": 4724,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "Array",
+      "offset": 5610,
+      "length": 2,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "Array",
+      "offset": 6533,
+      "length": 2,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "StringLiteral",
+      "offset": 10463,
+      "length": 14,
+      "value": "\"disconnected\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "StringLiteral",
+      "offset": 21871,
+      "length": 9,
+      "value": "\"pending\""
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2EvenHubSession.swift",
+      "kind": "Dictionary",
+      "offset": 25481,
+      "length": 3,
+      "value": "[]"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1064,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1094,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1129,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1156,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1189,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "BooleanLiteral",
+      "offset": 5286,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 6396,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaTransfer.swift",
+      "kind": "IntegerLiteral",
+      "offset": 6438,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaVersionWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1570,
+      "length": 1,
+      "value": "9"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 476,
+      "length": 4,
+      "value": "0xc0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 520,
+      "length": 4,
+      "value": "0xc1"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2849,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2853,
+      "length": 3,
+      "value": "256"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2902,
+      "length": 2,
+      "value": "24"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2922,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2926,
+      "length": 1,
+      "value": "8"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2960,
+      "length": 1,
+      "value": "1"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2976,
+      "length": 2,
+      "value": "31"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2982,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2987,
+      "length": 1,
+      "value": "0"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2OtaWire.swift",
+      "kind": "IntegerLiteral",
+      "offset": 2991,
+      "length": 10,
+      "value": "0x1edc6f41"
+    },
+    {
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2ReconnectBackoff.swift",
       "kind": "IntegerLiteral",
       "offset": 240,
       "length": 1,
       "value": "0"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2TimeSyncWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2TimeSyncWire.swift",
       "kind": "IntegerLiteral",
       "offset": 2680,
       "length": 1,
       "value": "3"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2TimeSyncWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2TimeSyncWire.swift",
       "kind": "IntegerLiteral",
       "offset": 2684,
       "length": 2,
       "value": "12"
     },
     {
-      "filePath": "\/Users\/whiskee\/Workspace\/EvenDevices\/plugins\/even_devices_sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2TimeSyncWire.swift",
+      "filePath": "\/private\/tmp\/even-auth14.iJw0Fj\/sdk\/native\/ios\/Sources\/EvenDevicesSDK\/G2TimeSyncWire.swift",
       "kind": "Array",
       "offset": 2694,
       "length": 14,

@@ -8,7 +8,8 @@ A Flutter plugin for connecting **enterprise-designated Even G2 glasses** on And
 
 - Device discovery, left/right temple connection status, enterprise authorization, and time synchronization.
 - Even Hub page, text, image, audio, IMU, menu, and interaction commands. Native SDKs own protocol encoding, responses, and page heartbeats.
-- Bundled Android AAR and iOS XCFramework, plus a demo with separate scan, device, Even Hub, and log views.
+- G2 firmware updates through the native SDKs. See the [OTA integration guide](docs/NATIVE_SDK.md#g2-firmware-updates).
+- Android SDK from Maven Central and iOS SDK from Swift Package Manager, plus a demo with separate scan, device, Even Hub, and log views.
 
 Current scope: G2. See [supported capabilities and limits](docs/SCOPE.md).
 
@@ -25,6 +26,17 @@ dependencies:
 ```
 
 Pin a reviewed commit instead of `main` for reproducible production builds.
+
+Enable Swift Package Manager before building iOS (required on the validated Flutter 3.32 toolchain):
+
+```bash
+flutter config --enable-swift-package-manager
+```
+
+For a build-local setting, use `FLUTTER_SWIFT_PACKAGE_MANAGER=true flutter build ios`.
+The plugin requires Flutter 3.32+ and uses SPM for iOS; it has no CocoaPods fallback.
+Android hosts must include `google()` and `mavenCentral()` in their dependency repositories.
+See [integration setup](docs/INTEGRATION.zh-CN.md#原生依赖管理) for existing iOS projects.
 
 Requirements: Android 5.0+ (API 21), iOS 15+, and glasses firmware with the enterprise service enabled. The repository uses Flutter 3.32.0; see [platform setup](docs/INTEGRATION.zh-CN.md#平台要求) for build requirements and Bluetooth permissions. Add `NSBluetoothAlwaysUsageDescription` to your iOS app's `Info.plist`.
 
@@ -105,7 +117,7 @@ Connection and text-page calls submit requests; their results arrive through `sd
 
 ## Native SDKs
 
-Native iOS apps can install **EvenDevicesSDK** from this repository with Swift Package Manager. Select exact version `0.1.0-beta.12` for native G2 firmware updates. Android Maven Central publication is pending. See the [native integration guide](docs/NATIVE_SDK.md).
+Both platforms pin native SDK **0.1.0-beta.14**. Android resolves `com.evenrealities.devices:even-devices-native-android` from Maven Central. iOS resolves **EvenDevicesSDK** from this repository through Swift Package Manager. See the [native integration guide](docs/NATIVE_SDK.md).
 
 ## Run the demo
 
@@ -117,10 +129,12 @@ cd example
 fvm flutter run
 ```
 
-Open Settings, paste your License JSON, and initialize. Scan and select your glasses, then use the device, Even Hub, and log views. The demo remembers the last successfully connected glasses for manual reconnection. See the [demo guide](example/README.md).
+Open Settings, paste your License JSON, and initialize. Scan and select your glasses, then use the device, Even Hub, and log views. Use the device view to select a G2 firmware file and enter its target version for OTA. The demo remembers the last successfully connected glasses for manual reconnection. See the [demo guide](example/README.md).
 
 ## Documentation
 
 Start with the **[Even Hub official documentation — Get Started / Overview](https://hub.evenrealities.com/docs/get-started/overview)** for Even Hub concepts, display and interaction guides, and the app development workflow. Use this repository's examples and integration reference for the Flutter connection APIs.
 
 [Validation status](docs/VALIDATION.md) · [Native artifact provenance](PROVENANCE.md) · [Apache 2.0 license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+
+The Flutter adapters pin the same beta.14 native SDK through Gradle and SwiftPM. Beta.13 adds native microphone PCM events and demo start/stop controls with frame counters. `audioPcm` is 16 kHz mono PCM16 little-endian; Flutter does not decode LC3. Archived binaries remain in this checkout for provenance checks; the plugin resolves its SDK dependencies remotely. See [validation](docs/VALIDATION.md) for hardware acceptance limits.

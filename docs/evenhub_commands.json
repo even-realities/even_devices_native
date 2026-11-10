@@ -231,6 +231,7 @@
   ],
   "eventDetails": {
     "common": "pageSessionId native page ID",
+    "audioEvent": "Native processed glasses audio, delivered after audioControl enable ACK on the current page and STREAM endpoint. audioPcm is binary mono signed PCM16LE, sampleRate=16000, channels=1, bitsPerSample=16, source=glasses, speakerRole=self/other/unknown, optional signed direction. Disable, page close and disconnect revoke delivery.",
     "deviceInput": "kind=list/text/system",
     "listOrText": "containerId, containerName",
     "list": "selectedItemName, selectedItemIndex",

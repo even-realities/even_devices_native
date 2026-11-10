@@ -91,6 +91,41 @@ void main() {
     ]);
   });
 
+  test('OTA forwards the original image and cancels the native operation',
+      () async {
+    const nativeId = 0x100000003;
+    messenger.setMockMethodCallHandler(methods, (call) async {
+      calls.add(call);
+      return call.method == 'startOta' ? nativeId : null;
+    });
+    final image = Uint8List.fromList([0, 1, 128, 255]);
+    final operation =
+        await sdk.startOta(firmware: image, targetVersion: '2.4.1.2');
+    expect(operation, nativeId);
+    await sdk.cancelOta(operationId: operation);
+    expect(calls.map((call) => call.method), ['startOta', 'cancelOta']);
+    expect(
+        calls.first.arguments, {'firmware': image, 'targetVersion': '2.4.1.2'});
+    expect(calls.last.arguments, {'operationId': nativeId});
+  });
+
+  test('OTA admission failure propagates and an absent operation ID fails',
+      () async {
+    final image = Uint8List(1);
+    messenger.setMockMethodCallHandler(methods, (_) async {
+      throw PlatformException(code: 'busy');
+    });
+    await expectLater(
+        sdk.startOta(firmware: image, targetVersion: '2.4.1.2'),
+        throwsA(
+            isA<PlatformException>().having((e) => e.code, 'code', 'busy')));
+    for (final invalidId in [null, 0, -1]) {
+      messenger.setMockMethodCallHandler(methods, (_) async => invalidId);
+      await expectLater(sdk.startOta(firmware: image, targetVersion: '2.4.1.2'),
+          throwsFormatException);
+    }
+  });
+
   test('a missing native permission result cannot become a grant', () async {
     messenger.setMockMethodCallHandler(methods, (_) async => null);
     expect(await sdk.requestBluetoothPermissions(), isFalse);

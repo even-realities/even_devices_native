@@ -8,7 +8,8 @@
 
 - 设备扫描、左右腿连接状态、企业验签和时间同步。
 - Even Hub 页面、文字、图片、音频、IMU、菜单及交互指令；原生 SDK 负责协议编码、应答和页面心跳。
-- 内置 Android AAR、iOS XCFramework，附带扫描、设备、Even Hub 和日志分开展示的示例。
+- G2 固件升级由原生 SDK 执行，接入方式见[升级指南](docs/INTEGRATION.zh-CN.md#g2-固件升级)。
+- 通过 Maven Central 引入 Android SDK，通过 Swift Package Manager 引入 iOS SDK，附带扫描、设备、Even Hub 和日志分开展示的示例。
 
 当前支持 G2，详见[能力与范围](docs/SCOPE.md)。
 
@@ -27,6 +28,16 @@ dependencies:
 正式项目建议将 `main` 替换为审核后的 commit，保证构建可复现。
 
 要求：Android 5.0+（API 21）、iOS 15+，以及已启用企业服务的眼镜固件。仓库使用 Flutter 3.32.0；构建要求与蓝牙权限见[平台配置](docs/INTEGRATION.zh-CN.md#平台要求)。iOS 宿主须在 `Info.plist` 中添加 `NSBluetoothAlwaysUsageDescription`。
+
+iOS 构建前先开启 Swift Package Manager（本仓库验证 Flutter 3.32）：
+
+```bash
+flutter config --enable-swift-package-manager
+```
+
+也可仅对当前构建设置 `FLUTTER_SWIFT_PACKAGE_MANAGER=true flutter build ios`。
+插件要求 Flutter 3.32+，iOS 仅使用 SPM。Android 宿主的依赖仓库需要包含 `google()` 和 `mavenCentral()`。
+已有 iOS 工程的迁移步骤见[原生依赖管理](docs/INTEGRATION.zh-CN.md#原生依赖管理)。
 
 ## 如何使用
 
@@ -105,7 +116,7 @@ await subscription.cancel();
 
 ## 纯原生 SDK
 
-iOS 原生 App 可通过 Swift Package Manager 添加本仓库，选择 **EvenDevicesSDK** 和精确版本 `0.1.0-beta.12`，接入 G2 固件升级。Android 尚未发布到 Maven Central。详见[原生接入指南](docs/NATIVE_SDK.md)。
+两端固定使用原生 SDK **0.1.0-beta.14**。Android 通过 Maven Central 引入 `com.evenrealities.devices:even-devices-native-android`；iOS 通过 Swift Package Manager 引入本仓库的 **EvenDevicesSDK**。详见[原生接入指南](docs/NATIVE_SDK.md)。
 
 ## 运行示例
 
@@ -117,10 +128,12 @@ cd example
 fvm flutter run
 ```
 
-打开设置，粘贴 License JSON 并初始化；扫描并选择眼镜后，在设备、Even Hub 和日志页进行操作。示例会记录上次成功连接的眼镜，供手动重连。详见[示例说明](example/README.md)。
+打开设置，粘贴 License JSON 并初始化；扫描并选择眼镜后，在设备、Even Hub 和日志页进行操作。设备详情可选择 G2 固件文件并输入目标版本进行 OTA。示例会记录上次成功连接的眼镜，供手动重连。详见[示例说明](example/README.md)。
 
 ## 官方文档
 
 接下来阅读 **[Even Hub 官方文档：Get Started / Overview](https://hub.evenrealities.com/docs/get-started/overview)**，了解 Even Hub、显示与交互设计，以及应用开发流程。Flutter 连接 API 的用法以本仓库示例和接入参考为准。
 
 [验证状态](docs/VALIDATION.md) · [原生产物来源](PROVENANCE.md) · [Apache 2.0 许可证](LICENSE) · [第三方许可](THIRD_PARTY_NOTICES.md)
+
+Flutter 适配层通过 Gradle 和 SwiftPM 固定使用同版本 beta.14 原生 SDK。beta.13 增加原生麦克风 PCM 音频与 Demo 开关/计数。`audioPcm` 是 16 kHz 单声道 PCM16 little-endian；Flutter 不解码 LC3。仓库保留的二进制用于来源与校验核对，插件通过远端仓库解析原生依赖。真实眼镜验收见[验证记录](docs/VALIDATION.md)。

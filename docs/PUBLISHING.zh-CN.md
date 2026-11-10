@@ -4,7 +4,7 @@ SDK 使用 Apache 2.0 许可。iOS SPM 和 Flutter 插件分别发布，各自�
 
 | 平台 | 分发入口 | 当前状态 |
 | --- | --- | --- |
-| Android | `com.evenrealities.devices:even-devices-native-android:0.1.0-beta.11` | Central 账号、命名空间和正式签名密钥尚未配置；未上传 Central |
+| Android | `com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14` | beta.14 已发布到 Maven Central；公司命名空间已验证 |
 | iOS | 本仓库根目录 `Package.swift`，product 为 `EvenDevicesSDK` | SPM 二进制入口；使用同名版本 tag |
 
 ## Android：第一次发布前
@@ -84,10 +84,10 @@ SDK 不需要持有眼镜签名平台的私钥。
 先生成不含正式签名的检查包：
 
 ```bash
-python3 tool/package_maven_central.py --version 0.1.0-beta.11 --unsigned
+python3 tool/package_maven_central.py --version 0.1.0-beta.14 --unsigned
 ```
 
-默认目录为 `build/central/0.1.0-beta.11/unsigned`。
+默认目录为 `build/central/0.1.0-beta.14/unsigned`。
 其中 ZIP 名称带 `unsigned`，`release.json` 中 `upload_ready` 为 `false`，
 上传脚本会拒绝该包。
 
@@ -95,27 +95,25 @@ python3 tool/package_maven_central.py --version 0.1.0-beta.11 --unsigned
 
 ```bash
 python3 tool/package_maven_central.py \
-  --version 0.1.0-beta.11 --signing-key <完整签名密钥指纹>
+  --version 0.1.0-beta.14 --signing-key <完整签名密钥指纹>
 ```
 
-默认输出 `build/central/0.1.0-beta.11/signed/`：
+默认输出 `build/central/0.1.0-beta.14/signed/`：
 
 ```text
 release.json
 <Central bundle>.zip
-maven/com/evenrealities/devices/even-devices-native-android/0.1.0-beta.11/
-  even-devices-native-android-0.1.0-beta.11.aar
-  even-devices-native-android-0.1.0-beta.11.pom
-  even-devices-native-android-0.1.0-beta.11.module
-  even-devices-native-android-0.1.0-beta.11-sources.jar
-  even-devices-native-android-0.1.0-beta.11-javadoc.jar
+maven/com/evenrealities/devices/even-devices-native-android/0.1.0-beta.14/
+  even-devices-native-android-0.1.0-beta.14.aar
+  even-devices-native-android-0.1.0-beta.14.pom
+  even-devices-native-android-0.1.0-beta.14.module
+  even-devices-native-android-0.1.0-beta.14-sources.jar
+  even-devices-native-android-0.1.0-beta.14-javadoc.jar
   ...每个主文件的 .asc 和 md5/sha1/sha256/sha512
 ```
 
 脚本校验现有 AAR 身份及依赖信息，只在发行目录补齐公开 POM 元数据。
-当前为二进制 SDK 分发：sources JAR 明确放置说明文档，javadoc JAR 包含原生接入指南，
-不声称包含实现源码或自动生成的 API 文档。
-[Sonatype 允许这类说明 JAR](https://central.sonatype.org/publish/requirements/)。
+sources JAR 包含从构建提交取得的 Android 实现源码，javadoc JAR 包含原生接入指南。双端原生源码、构建工具和编解码器输入见 [构建来源](../PROVENANCE.md)。
 
 本地签名校验通过仅表示可以提交 Portal；命名空间权限、公钥可获取性及其它规则
 仍由 Central 服务端验证。现有输出目录不会被覆盖，重跑时指定新的 `--output-dir`。
@@ -124,7 +122,7 @@ Token 已配置到当前进程环境后，上传并在 Central 验证通过后�
 
 ```bash
 python3 tool/publish_maven_central.py upload \
-  build/central/0.1.0-beta.11/signed --publish
+  build/central/0.1.0-beta.14/signed --publish
 
 python3 tool/publish_maven_central.py status <返回的 deployment_id>
 ```
@@ -138,7 +136,7 @@ python3 tool/publish_maven_central.py status <deployment_id>
 
 `UPLOADED` 表示服务器接受了上传；`VALIDATED` 表示等待发布。
 只有 `PUBLISHED` 才表示 Central 完成发布，随后还应从
-`https://repo.maven.apache.org/maven2/com/evenrealities/devices/even-devices-native-android/0.1.0-beta.11/`
+`https://repo.maven.apache.org/maven2/com/evenrealities/devices/even-devices-native-android/0.1.0-beta.14/`
 实际下载并核对产物。接口和状态见
 [Portal Publisher API](https://central.sonatype.org/publish/publish-portal-api/)。
 发布后同一版本不可覆盖；下一版须更新版本和对应的审计产物。
@@ -146,7 +144,7 @@ python3 tool/publish_maven_central.py status <deployment_id>
 ## iOS：SPM 接入与发布
 
 SPM 通过 Git 仓库和版本 tag 分发，不需要另建一个 SPM 网站账号。
-本仓库根目录清单指向 `spm/EvenDevicesSDK-0.1.0-beta.12.xcframework.zip`，
+本仓库根目录清单指向 `spm/EvenDevicesSDK-0.1.0-beta.14.xcframework.zip`，
 二进制跟随 Git tag 下载，无单独 ZIP 鉴权或远程 checksum 配置。
 
 用户在 Xcode **File → Add Package Dependencies** 输入：
@@ -155,7 +153,7 @@ SPM 通过 Git 仓库和版本 tag 分发，不需要另建一个 SPM 网站账�
 https://github.com/even-realities/flutter_enterprise_sdk.git
 ```
 
-选择 **Exact Version：`0.1.0-beta.12`**，product 选择 `EvenDevicesSDK`。
+本地可通过 **Add Local** 接入。使用已发布的 Git 标签时，选择 **Exact Version：`0.1.0-beta.14`**，product 选择 `EvenDevicesSDK`。
 纯原生接入示例见 [Native SDK guide](NATIVE_SDK.md)。
 
 维护者每次更新版本时：
@@ -165,11 +163,11 @@ https://github.com/even-realities/flutter_enterprise_sdk.git
 3. 提交根清单与对应二进制，为该提交创建唯一的语义版本 tag；不要移动已有 tag。
 4. 使用新目录从公开 Git 地址按 tag 解析并构建纯 iOS 宿主。
 
-可用 `swift package compute-checksum spm/EvenDevicesSDK-0.1.0-beta.12.xcframework.zip` 核对 `spm/provenance.json` 中的 SHA-256。
+可用 `swift package compute-checksum spm/EvenDevicesSDK-0.1.0-beta.14.xcframework.zip` 核对 `spm/provenance.json` 中的 SHA-256。
 Apple 的说明见[二进制 Swift package 分发](https://developer.apple.com/documentation/xcode/distributing-binary-frameworks-as-swift-packages)。
 
 ## 验证边界
 
 发行脚本测试覆盖坐标、校验值、附属包、签名与上传状态语义；
 SPM 构建验证解析和链接。它们不会连接眼镜，
-本次 SPM 发布尚未验证真机 OTA。
+beta.12 的真机验收边界仍见[验证记录](VALIDATION.md)。

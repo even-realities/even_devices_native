@@ -78,6 +78,27 @@ class EvenDevicesNative {
   /// Completion/failure arrives separately as a timeSync event.
   Future<void> syncG2Time() => _methods.invokeMethod<void>('syncG2Time');
 
+  /// Starts a dual-leg G2 update and returns its native operation ID.
+  /// Subscribe to [events] first. Transfer and post-reconnect verification
+  /// are separate native phases; the returned ID only acknowledges admission.
+  Future<int> startOta({
+    required Uint8List firmware,
+    required String targetVersion,
+  }) async {
+    final operation = await _methods.invokeMethod<int>('startOta', {
+      'firmware': firmware,
+      'targetVersion': targetVersion,
+    });
+    if (operation == null || operation <= 0) {
+      throw const FormatException('Missing or invalid native OTA operation ID');
+    }
+    return operation;
+  }
+
+  /// Targets the operation returned by [startOta], including during reconnect.
+  Future<void> cancelOta({required int operationId}) =>
+      _methods.invokeMethod<void>('cancelOta', {'operationId': operationId});
+
   /// Opens a native-owned EvenHub text page after whole-device READY.
   ///
   /// Native validates the nonempty, at most 64-byte UTF-8 text, waits for the

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'device_history.dart';
+import 'ota_panel.dart';
 
 void main() => runApp(const NativeSdkExample());
 
@@ -34,6 +35,8 @@ class NativeSdkExample extends StatelessWidget {
         home: const _Dashboard(),
       );
 }
+
+enum _MicrophoneState { off, starting, on, stopping, stopFailed }
 
 class _Dashboard extends StatefulWidget {
   const _Dashboard();
@@ -74,12 +77,23 @@ class _DashboardState extends State<_Dashboard> {
   bool _connectionRequested = false;
   bool _hubRequested = false;
   String? _activeNamespace;
+  // A new SDK owner invalidates pending picker results and OTA projections.
+  Object _otaOwner = Object();
   String? _scanFailure;
   String? _notice;
   String _hubPhase = 'idle';
   String? _hubFailure;
   String? _hubInput;
   int _heartbeatCount = 0;
+  // Keep only the latest frame prefix in memory. Never send it to logs or storage.
+  final _audioPreview = Uint8List(32);
+  int _previewLength = 0;
+  int _latestFrameBytes = 0;
+  _MicrophoneState _microphone = _MicrophoneState.off;
+  int _audioFrames = 0;
+  int _audioBytes = 0;
+  Timer? _audioRefresh;
+
   String _logCategory = '全部';
   String _logLevel = '全部';
 
@@ -108,6 +122,28 @@ class _DashboardState extends State<_Dashboard> {
   /// bytes, license text, exception messages, and signatures are never copied.
   void _onEvent(EvenDevicesEvent event) {
     if (!mounted) return;
+    // PCM never enters the diagnostic log or a per-frame widget rebuild.
+    if (event.type == 'evenHub' && event.event == 'audioEvent') {
+      if (event.namespace == _activeNamespace &&
+          event.sn == _pair?.sn &&
+          event.generation == _pair?.generation &&
+          _ready &&
+          (_microphone == _MicrophoneState.on ||
+              _microphone == _MicrophoneState.starting) &&
+          event.audioPcm != null) {
+        final pcm = event.audioPcm!;
+        _latestFrameBytes = pcm.length;
+        _previewLength = pcm.length.clamp(0, _audioPreview.length);
+        _audioPreview.setRange(0, _previewLength, pcm);
+        _audioFrames++;
+        _audioBytes += pcm.length;
+        _audioRefresh ??= Timer(const Duration(milliseconds: 500), () {
+          _audioRefresh = null;
+          if (mounted) setState(() {});
+        });
+      }
+      return;
+    }
     setState(() {
       // Another account's events cannot publish a device or a page into this
       // dashboard. The native owner supplies namespace on initialized events.
@@ -131,6 +167,10 @@ class _DashboardState extends State<_Dashboard> {
         // and therefore cannot invalidate an already active page projection.
         if (event.failure != 'busy') {
           _hubPhase = event.phase ?? _hubPhase;
+          if (const {'opening', 'closing', 'closed', 'failed'}
+              .contains(event.phase)) {
+            _resetAudioProjection();
+          }
           _hubFailure = event.failure;
           _hubRequested = false;
           final count = event.heartbeatCount;
@@ -158,6 +198,7 @@ class _DashboardState extends State<_Dashboard> {
         'discovery' => '扫描',
         'g2' || 'timeSync' => '连接',
         'evenHub' => 'EvenHub',
+        'ota' => 'OTA',
         'transport' || 'business' => '传输',
         _ => '其他',
       };
@@ -208,6 +249,11 @@ class _DashboardState extends State<_Dashboard> {
     final replacementGeneration = existing?.generation != null &&
         event.generation != null &&
         event.generation! > existing!.generation!;
+    if (replacementGeneration) {
+      _hubRequested = false;
+      _hubPhase = 'idle';
+      _resetAudioProjection();
+    }
     final pair = existing?.sn == event.sn && !replacementGeneration
         ? existing!
         : (_pair = _PairView(event.sn!, _found[event.sn]?.endpoints ?? {}));
@@ -252,6 +298,7 @@ class _DashboardState extends State<_Dashboard> {
         // A local display revocation never sends page work after a lost link.
         _hubRequested = false;
         _hubPhase = 'closed';
+        _resetAudioProjection();
       }
     } else if (!pair.ready && event.phase != null) {
       pair.phase = event.phase!;
@@ -291,6 +338,7 @@ class _DashboardState extends State<_Dashboard> {
     );
     if (!mounted) return;
     _initialized = true;
+    _otaOwner = Object();
     _activeNamespace = namespace;
     _pair = null;
     _found.clear();
@@ -298,6 +346,7 @@ class _DashboardState extends State<_Dashboard> {
     _connectionRequested = false;
     _hubRequested = false;
     _hubPhase = 'idle';
+    _resetAudioProjection();
     _heartbeatCount = 0;
     _notice = null;
     await _loadHistory(namespace);
@@ -467,6 +516,7 @@ class _DashboardState extends State<_Dashboard> {
     await _sdk.reset();
     if (!mounted) return;
     _initialized = false;
+    _otaOwner = Object();
     _activeNamespace = null;
     _pair = null;
     _found.clear();
@@ -474,6 +524,7 @@ class _DashboardState extends State<_Dashboard> {
     _connectionRequested = false;
     _hubRequested = false;
     _hubPhase = 'idle';
+    _resetAudioProjection();
     _heartbeatCount = 0;
     _hubInput = null;
     _hubFailure = null;
@@ -497,8 +548,14 @@ class _DashboardState extends State<_Dashboard> {
           'SN=${event.sn}',
         if (event.side == 'left' || event.side == 'right')
           event.side == 'left' ? '左腿' : '右腿',
-        if (event.phase != null) _phaseName(event.phase),
-        if (event.failure != null) _failureName(event.failure),
+        if (event.phase != null)
+          event.type == 'ota'
+              ? otaPhaseName(event.phase)
+              : _phaseName(event.phase),
+        if (event.failure != null)
+          event.type == 'ota'
+              ? otaFailureName(event.failure)
+              : _failureName(event.failure),
         if (event.type == 'timeSync') event.success == true ? '成功' : '失败',
         if (event.type == 'evenHub' &&
             _inputNames.containsKey(event.details['event']))
@@ -514,6 +571,7 @@ class _DashboardState extends State<_Dashboard> {
   @override
   void dispose() {
     // Tab changes retain the owner; only this host's teardown retires it.
+    _audioRefresh?.cancel();
     unawaited(_subscription?.cancel());
     unawaited(_sdk.reset().catchError((Object _) {}));
     _namespace.dispose();
@@ -553,12 +611,22 @@ class _DashboardState extends State<_Dashboard> {
             ),
             if (_busy) const LinearProgressIndicator(minHeight: 2),
             Expanded(
-              child: switch (_tab) {
-                0 => _scanPage(),
-                1 => _devicePage(),
-                2 => _evenHubPage(),
-                _ => _logsPage(),
-              },
+              // Keep the OTA form and event subscription while switching tabs.
+              child: IndexedStack(index: _tab == 4 ? 1 : 0, children: [
+                switch (_tab) {
+                  0 => _scanPage(),
+                  1 => _devicePage(),
+                  2 => _evenHubPage(),
+                  3 => _logsPage(),
+                  _ => const SizedBox.shrink(),
+                },
+                G2OtaPanel(
+                    key: ObjectKey(_otaOwner),
+                    sdk: _sdk,
+                    namespace: _activeNamespace,
+                    sn: _pair?.sn,
+                    ready: _ready && !_busy && !_hubLive),
+              ]),
             ),
           ]),
           bottomNavigationBar: NavigationBar(
@@ -572,6 +640,8 @@ class _DashboardState extends State<_Dashboard> {
                   icon: Icon(Icons.space_dashboard_outlined), label: 'EvenHub'),
               NavigationDestination(
                   icon: Icon(Icons.terminal_outlined), label: '日志'),
+              NavigationDestination(
+                  icon: Icon(Icons.system_update_alt), label: 'OTA'),
             ],
           ),
         ),
@@ -760,6 +830,7 @@ class _DashboardState extends State<_Dashboard> {
                             _connectionRequested = false;
                             _hubRequested = false;
                             _hubPhase = 'closed';
+                            _resetAudioProjection();
                           }),
                   child: const Text('断开连接'),
                 ),
@@ -933,6 +1004,60 @@ class _DashboardState extends State<_Dashboard> {
           _detail('页面状态', _hubRequested ? '请求已提交，等待原生结果' : _hubPhaseName),
           _detail('心跳确认', '$_heartbeatCount 次'),
           _detail('最近交互', _hubInput ?? '尚未收到触摸事件'),
+          const SizedBox(height: 12),
+          Wrap(spacing: 8, children: [
+            FilledButton.icon(
+              key: const ValueKey('evenhub-microphone-start'),
+              onPressed: !_ready ||
+                      _busy ||
+                      !const {'active', 'heartbeat', 'input'}
+                          .contains(_hubPhase) ||
+                      _microphone != _MicrophoneState.off
+                  ? null
+                  : () => _setMicrophone(true),
+              icon: const Icon(Icons.mic, size: 18),
+              label: const Text('开启麦克风'),
+            ),
+            OutlinedButton(
+              key: const ValueKey('evenhub-microphone-stop'),
+              onPressed: !_ready ||
+                      _busy ||
+                      (_microphone != _MicrophoneState.on &&
+                          _microphone != _MicrophoneState.stopFailed)
+                  ? null
+                  : () => _setMicrophone(false),
+              child: const Text('停止麦克风'),
+            ),
+          ]),
+          _detail(
+              '眼镜麦克风',
+              switch (_microphone) {
+                _MicrophoneState.off => '未开启',
+                _MicrophoneState.starting => '正在开启',
+                _MicrophoneState.on => _audioFrames == 0 ? '已开启，等待音频' : '正在接收',
+                _MicrophoneState.stopping => '正在停止',
+                _MicrophoneState.stopFailed => '停止未确认，请重试',
+              }),
+          _detail('收到音频', '$_audioFrames 帧 · $_audioBytes PCM 字节'),
+          const Text('16 kHz · 单声道 · PCM16LE', style: TextStyle(fontSize: 12)),
+          const SizedBox(height: 12),
+          Text(_previewLength == 0
+              ? 'PCM 字节预览（十六进制）'
+              : '最近一帧 · $_latestFrameBytes 字节 · 显示前 $_previewLength 字节'),
+          const SizedBox(height: 6),
+          Text(
+            _previewLength == 0
+                ? '暂无音频字节'
+                : [
+                    for (int i = 0; i < _previewLength; i++)
+                      _audioPreview[i]
+                          .toRadixString(16)
+                          .padLeft(2, '0')
+                          .toUpperCase(),
+                  ].join(' '),
+            key: const ValueKey('evenhub-audio-hex'),
+            style: const TextStyle(fontFamily: 'monospace', height: 1.5),
+          ),
           if (_hubFailure != null) _detail('失败原因', _failureName(_hubFailure)),
           const SizedBox(height: 8),
           const Text('创建成功后由原生 SDK 每 5 秒维护页面心跳；退出或断连后停止。',
@@ -940,6 +1065,43 @@ class _DashboardState extends State<_Dashboard> {
         ]),
       ),
     ]);
+  }
+
+  /// Resets only the host projection after its native owner is retired.
+  void _resetAudioProjection() {
+    _audioRefresh?.cancel();
+    _audioRefresh = null;
+    _microphone = _MicrophoneState.off;
+    _audioPreview.fillRange(0, _audioPreview.length, 0);
+    _previewLength = 0;
+    _latestFrameBytes = 0;
+    _audioFrames = 0;
+    _audioBytes = 0;
+  }
+
+  /// A native audio event can arrive before its method result. Arm preview
+  /// before enable and revoke it immediately on stop, even if stop needs retry.
+  Future<void> _setMicrophone(bool enabled) async {
+    final pending =
+        enabled ? _MicrophoneState.starting : _MicrophoneState.stopping;
+    setState(() {
+      _resetAudioProjection();
+      _microphone = pending;
+    });
+    final accepted = await _run(enabled ? '开启麦克风' : '停止麦克风', () async {
+      await _sdk.executeEvenHubCommand(EvenHubCommand.audioControl,
+          parameters: {'enabled': enabled});
+    });
+    // Teardown clears the pending state. A late ACK cannot revive old audio.
+    if (!mounted || _microphone != pending) return;
+    setState(() {
+      if (enabled && accepted) {
+        _microphone = _MicrophoneState.on;
+      } else {
+        _resetAudioProjection();
+        if (!enabled && !accepted) _microphone = _MicrophoneState.stopFailed;
+      }
+    });
   }
 
   String get _hubPhaseName =>
@@ -992,7 +1154,17 @@ class _DashboardState extends State<_Dashboard> {
               value: _logCategory,
               isExpanded: true,
               decoration: const InputDecoration(labelText: '分类'),
-              items: const ['全部', '连接', '扫描', 'EvenHub', '操作', '传输', '错误', '其他']
+              items: const [
+                '全部',
+                '连接',
+                '扫描',
+                'EvenHub',
+                'OTA',
+                '操作',
+                '传输',
+                '错误',
+                '其他'
+              ]
                   .map((value) =>
                       DropdownMenuItem(value: value, child: Text(value)))
                   .toList(),
@@ -1490,6 +1662,7 @@ const _eventTypes = {
   'g2': '连接状态',
   'evenHub': 'EvenHub',
   'timeSync': '时间同步',
+  'ota': '固件升级',
   'transport': '原生传输事件',
   'business': '业务入站事件',
 };
