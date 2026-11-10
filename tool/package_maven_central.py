@@ -22,7 +22,8 @@ import zipfile
 
 GROUP = "com.evenrealities.devices"
 ARTIFACT = "even-devices-native-android"
-REPOSITORY = "https://github.com/even-realities/even_devices_native"
+# Use the canonical repository for publication metadata after the rename.
+REPOSITORY = "https://github.com/even-realities/flutter_enterprise_sdk"
 MAVEN_NS = "http://maven.apache.org/POM/4.0.0"
 HASHES = ("md5", "sha1", "sha256", "sha512")
 ET.register_namespace("", MAVEN_NS)
@@ -173,7 +174,7 @@ def central_pom(pom):
     scm = element("scm")
     for name, value in (
         ("connection", "scm:git:" + REPOSITORY + ".git"),
-        ("developerConnection", "scm:git:ssh://git@github.com/even-realities/even_devices_native.git"),
+        ("developerConnection", "scm:git:ssh://git@github.com/even-realities/flutter_enterprise_sdk.git"),
         ("url", REPOSITORY),
     ):
         element(name, value, scm)

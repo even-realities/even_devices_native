@@ -31,7 +31,7 @@ dependencies {
 
 For local evaluation today, add this checkout's `android/maven` directory as a
 Maven repository, keeping `google()` and `mavenCentral()` for transitive dependencies.
-Use its absolute path in `maven { url = uri("/path/to/even_devices_native/android/maven") }`.
+Use its absolute path in `maven { url = uri("/path/to/flutter_enterprise_sdk/android/maven") }`.
 Minimum Android version: API 21; the library uses Java/Kotlin 17 bytecode.
 
 The host requests Bluetooth permissions before using the SDK. On Android 12+,
@@ -83,19 +83,19 @@ contains this guide; neither is advertised as generated API documentation.
 ## iOS — Swift Package Manager
 
 In Xcode, choose **File → Add Package Dependencies**, enter
-`https://github.com/even-realities/even_devices_native.git`, choose exact version
+`https://github.com/even-realities/flutter_enterprise_sdk.git`, choose exact version
 `0.1.0-beta.11`, and add the **EvenDevicesSDK** product to your app target.
 
 For a Swift package consumer:
 
 ```swift
 .package(
-    url: "https://github.com/even-realities/even_devices_native.git",
+    url: "https://github.com/even-realities/flutter_enterprise_sdk.git",
     exact: "0.1.0-beta.11"
 )
 ```
 
-Add `.product(name: "EvenDevicesSDK", package: "even_devices_native")` to the
+Add `.product(name: "EvenDevicesSDK", package: "flutter_enterprise_sdk")` to the
 consumer target's dependencies. The package contains a versioned local binary
 target, so Xcode downloads the framework with the Git tag. It does not need an
 external ZIP URL or download token.

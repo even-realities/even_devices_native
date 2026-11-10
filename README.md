@@ -1,4 +1,4 @@
-# even_devices_native
+# flutter_enterprise_sdk
 
 English | [简体中文](README.zh-CN.md)
 
@@ -20,7 +20,7 @@ Add the plugin to your app's `pubspec.yaml`, then run `flutter pub get`:
 dependencies:
   even_devices_native:
     git:
-      url: https://github.com/even-realities/even_devices_native.git
+      url: https://github.com/even-realities/flutter_enterprise_sdk.git
       ref: main
 ```
 

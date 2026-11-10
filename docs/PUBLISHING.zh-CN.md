@@ -153,7 +153,7 @@ SPM 通过 Git 仓库和版本 tag 分发，不需要另建一个 SPM 网站账�
 用户在 Xcode **File → Add Package Dependencies** 输入：
 
 ```text
-https://github.com/even-realities/even_devices_native.git
+https://github.com/even-realities/flutter_enterprise_sdk.git
 ```
 
 选择 **Exact Version：`0.1.0-beta.11`**，product 选择 `EvenDevicesSDK`。

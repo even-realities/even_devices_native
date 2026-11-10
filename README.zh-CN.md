@@ -1,4 +1,4 @@
-# even_devices_native
+# flutter_enterprise_sdk
 
 [English](README.md) | 简体中文
 
@@ -20,7 +20,7 @@
 dependencies:
   even_devices_native:
     git:
-      url: https://github.com/even-realities/even_devices_native.git
+      url: https://github.com/even-realities/flutter_enterprise_sdk.git
       ref: main
 ```
 
