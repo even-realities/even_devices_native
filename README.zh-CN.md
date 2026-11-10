@@ -103,6 +103,13 @@ await subscription.cancel();
 
 连接和短文字页接口完成时表示请求已提交，实际结果通过 `sdk.events` 返回。其它页面及设备交互使用 `executeEvenHubCommand`，参数见[指令契约](docs/evenhub_commands.json)和[接入参考](docs/INTEGRATION.zh-CN.md)。
 
+## 纯原生 SDK
+
+iOS 原生 App 可通过 Swift Package Manager 接入本仓库，选择版本
+`0.1.0-beta.11` 和 **EvenDevicesSDK** product。Android 的 Maven Central
+发布正在准备，接入方式与当前可用状态见[原生接入指南](docs/NATIVE_SDK.md)
+和[发布指南](docs/PUBLISHING.zh-CN.md)。
+
 ## 运行示例
 
 连接手机后，在仓库根目录执行：

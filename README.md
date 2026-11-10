@@ -103,6 +103,13 @@ await subscription.cancel();
 
 Connection and text-page calls submit requests; their results arrive through `sdk.events`. Use `executeEvenHubCommand` for other page and device interactions; see the [command contract](docs/evenhub_commands.json) and [integration reference](docs/INTEGRATION.zh-CN.md).
 
+## Native SDKs
+
+Native iOS apps can use this repository through Swift Package Manager: select
+version `0.1.0-beta.11` and product **EvenDevicesSDK**. Android Maven Central
+publication is being prepared. See the [native integration guide](docs/NATIVE_SDK.md)
+and [publishing guide](docs/PUBLISHING.zh-CN.md) for setup and current availability.
+
 ## Run the demo
 
 From the repository root, with a phone connected:
