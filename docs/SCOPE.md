@@ -11,6 +11,6 @@
 
 Flutter 转换参数和事件。原生 SDK 拥有连接、证明校验、协议编码、应答、分包、超时与取消；连接回调保留适用的 generation 身份信息。
 
-此版本尚未接入 R1、通知、OTA、完整业务队列、后台自动恢复和异步 License provider。图片输入要求已转换为固件格式的字节，尚未提供 PNG/BMP 转换或压缩工具。真实眼镜验收范围见[验证记录](VALIDATION.md)。
+Flutter 插件尚未接入 OTA；纯原生 iOS 可使用 SPM beta.12 进行 G2 OTA。此版本尚未接入 R1、通知、完整业务队列、后台自动恢复和异步 License provider。图片输入要求已转换为固件格式的字节，尚未提供 PNG/BMP 转换或压缩工具。真实眼镜验收范围见[验证记录](VALIDATION.md)。
 
 Even Hub 的显示与交互概念可参考[官方入门文档](https://hub.evenrealities.com/docs/get-started/overview)，本插件 API 见[接入说明](../README.md)。

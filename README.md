@@ -105,10 +105,7 @@ Connection and text-page calls submit requests; their results arrive through `sd
 
 ## Native SDKs
 
-Native iOS apps can use this repository through Swift Package Manager: select
-version `0.1.0-beta.11` and product **EvenDevicesSDK**. Android Maven Central
-publication is being prepared. See the [native integration guide](docs/NATIVE_SDK.md)
-and [publishing guide](docs/PUBLISHING.zh-CN.md) for setup and current availability.
+Native iOS apps can install **EvenDevicesSDK** from this repository with Swift Package Manager. Select exact version `0.1.0-beta.12` for native G2 firmware updates. Android Maven Central publication is pending. See the [native integration guide](docs/NATIVE_SDK.md).
 
 ## Run the demo
 

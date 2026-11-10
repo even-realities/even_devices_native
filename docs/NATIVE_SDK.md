@@ -1,9 +1,9 @@
 # Native Android and iOS integration
 
-The same G2 SDK binaries power the Flutter plugin and native applications.
+The Android and iOS SDKs can be used directly in native applications.
 Both SDKs own license parsing, exact SN selection, enterprise authorization,
 two-temple business authentication, time synchronization and Even Hub commands.
-They do not require the Flutter runtime. Current version: `0.1.0-beta.11`.
+They do not require the Flutter runtime. The iOS SwiftPM release is `0.1.0-beta.12`.
 
 ## Android — Maven Central
 
@@ -84,14 +84,14 @@ contains this guide; neither is advertised as generated API documentation.
 
 In Xcode, choose **File → Add Package Dependencies**, enter
 `https://github.com/even-realities/flutter_enterprise_sdk.git`, choose exact version
-`0.1.0-beta.11`, and add the **EvenDevicesSDK** product to your app target.
+`0.1.0-beta.12`, and add the **EvenDevicesSDK** product to your app target.
 
 For a Swift package consumer:
 
 ```swift
 .package(
     url: "https://github.com/even-realities/flutter_enterprise_sdk.git",
-    exact: "0.1.0-beta.11"
+    exact: "0.1.0-beta.12"
 )
 ```
 
@@ -135,6 +135,21 @@ authorization. After whole-device READY, use
 `try sdk.openEvenHubTextPage(text: "Hello Even Hub")`; finish with
 `try sdk.closeEvenHub()` and `sdk.disconnect()`.
 
+## G2 firmware updates on iOS
+
+Subscribe to `onOtaEvent` during initialization. Once both temples are READY,
+pass the complete G2 EVENOTA firmware as `Data` and its expected version:
+
+```swift
+let operation = try sdk.startOta(firmware: firmware, targetVersion: targetVersion)
+// If the user requests cancellation:
+sdk.cancelOta(operationId: operation)
+```
+
+Match events to the operation ID. `transportCompleted` confirms transfer;
+`succeeded` requires matching version readback from both temples after reconnection.
+A physical upgrade with this release has not yet been verified.
+
 ## Authorization and scope
 
 Pass the complete License JSON from the signing platform unchanged. The native
@@ -143,7 +158,7 @@ are rejected before connecting. Keep platform credentials and signing private
 keys outside the application. A scanned device or a single successful temple
 is not whole-device READY.
 
-R1, OTA and the full notification pipeline are outside this distribution's
+R1 and the full notification pipeline are outside this distribution's
 current public surface. Even Hub image inputs must already be in the firmware
 format; image preprocessing is not included. See [scope](SCOPE.md),
 [validation evidence and remaining device checks](VALIDATION.md), and

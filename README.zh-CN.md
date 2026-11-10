@@ -105,10 +105,7 @@ await subscription.cancel();
 
 ## 纯原生 SDK
 
-iOS 原生 App 可通过 Swift Package Manager 接入本仓库，选择版本
-`0.1.0-beta.11` 和 **EvenDevicesSDK** product。Android 的 Maven Central
-发布正在准备，接入方式与当前可用状态见[原生接入指南](docs/NATIVE_SDK.md)
-和[发布指南](docs/PUBLISHING.zh-CN.md)。
+iOS 原生 App 可通过 Swift Package Manager 添加本仓库，选择 **EvenDevicesSDK** 和精确版本 `0.1.0-beta.12`，接入 G2 固件升级。Android 尚未发布到 Maven Central。详见[原生接入指南](docs/NATIVE_SDK.md)。
 
 ## 运行示例
 

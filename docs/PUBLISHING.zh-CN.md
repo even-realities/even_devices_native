@@ -1,7 +1,6 @@
 # Android Maven Central 与 iOS SPM 发布
 
-当前整理版本：`0.1.0-beta.11`，许可为 Apache 2.0。发布复用仓库中已经校验的
-AAR 和 XCFramework，不重新编译或替换 Flutter 插件内的原生产物。
+SDK 使用 Apache 2.0 许可。iOS SPM 和 Flutter 插件分别发布，各自使用对应版本的二进制。
 
 | 平台 | 分发入口 | 当前状态 |
 | --- | --- | --- |
@@ -147,7 +146,7 @@ python3 tool/publish_maven_central.py status <deployment_id>
 ## iOS：SPM 接入与发布
 
 SPM 通过 Git 仓库和版本 tag 分发，不需要另建一个 SPM 网站账号。
-本仓库根目录清单指向 `ios/Frameworks/EvenDevicesSDK.xcframework`，
+本仓库根目录清单指向 `spm/EvenDevicesSDK-0.1.0-beta.12.xcframework.zip`，
 二进制跟随 Git tag 下载，无单独 ZIP 鉴权或远程 checksum 配置。
 
 用户在 Xcode **File → Add Package Dependencies** 输入：
@@ -156,7 +155,7 @@ SPM 通过 Git 仓库和版本 tag 分发，不需要另建一个 SPM 网站账�
 https://github.com/even-realities/flutter_enterprise_sdk.git
 ```
 
-选择 **Exact Version：`0.1.0-beta.11`**，product 选择 `EvenDevicesSDK`。
+选择 **Exact Version：`0.1.0-beta.12`**，product 选择 `EvenDevicesSDK`。
 纯原生接入示例见 [Native SDK guide](NATIVE_SDK.md)。
 
 维护者每次更新版本时：
@@ -166,11 +165,11 @@ https://github.com/even-realities/flutter_enterprise_sdk.git
 3. 提交根清单与对应二进制，为该提交创建唯一的语义版本 tag；不要移动已有 tag。
 4. 使用新目录从公开 Git 地址按 tag 解析并构建纯 iOS 宿主。
 
-当前发行 ZIP 仅是额外下载方式；SPM 的权威输入是 tag 对应的 Git 内容。
+可用 `swift package compute-checksum spm/EvenDevicesSDK-0.1.0-beta.12.xcframework.zip` 核对 `spm/provenance.json` 中的 SHA-256。
 Apple 的说明见[二进制 Swift package 分发](https://developer.apple.com/documentation/xcode/distributing-binary-frameworks-as-swift-packages)。
 
 ## 验证边界
 
 发行脚本测试覆盖坐标、校验值、附属包、签名与上传状态语义；
 SPM 构建验证解析和链接。它们不会连接眼镜，
-beta.11 的真机验收边界仍见[验证记录](VALIDATION.md)。
+本次 SPM 发布尚未验证真机 OTA。

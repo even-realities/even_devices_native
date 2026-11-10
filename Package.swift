@@ -1,8 +1,7 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-// Native iOS consumers reuse the audited framework shipped with the Flutter
-// plugin. No Flutter source, runtime or second BLE owner enters this product.
+// Pin the native iOS archive independently of the Flutter plugin binaries.
 let package = Package(
     name: "EvenDevicesSDK",
     platforms: [.iOS(.v15)],
@@ -12,7 +11,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "EvenDevicesSDK",
-            path: "ios/Frameworks/EvenDevicesSDK.xcframework"
+            path: "spm/EvenDevicesSDK-0.1.0-beta.12.xcframework.zip"
         ),
     ]
 )
