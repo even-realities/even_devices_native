@@ -1,6 +1,8 @@
 # Native Android and iOS integration
 
 The Android and iOS SDKs can be used directly in native applications.
+Their source, shared protocol, native examples and publishing scripts are managed
+in the dedicated [enterprise_sdk repository](https://github.com/even-realities/enterprise_sdk).
 Both SDKs own license parsing, exact SN selection, enterprise authorization,
 two-temple business authentication, time synchronization and Even Hub commands.
 They do not require the Flutter runtime. Both published native dependencies are pinned to beta.14. The Flutter plugin uses Maven Central on Android and SwiftPM on iOS.
@@ -71,24 +73,24 @@ Native events confirm page activation and renewals; request submission does not
 prove display success. Call `sdk.closeEvenHub()` when finished, then
 `sdk.disconnectG2(left, right)` or `sdk.reset()` on teardown.
 
-The Maven sources JAR contains Android implementation sources from the native build commit. The [source bundle and build instructions](../PROVENANCE.md) cover both platforms, including the required codec inputs. The documentation JAR contains this guide.
+The Maven sources JAR contains Android implementation sources from the original native build commit. Historical beta.14 build inputs remain documented in [artifact provenance](../PROVENANCE.md). Future native builds and publishing use [enterprise_sdk](https://github.com/even-realities/enterprise_sdk); the Maven coordinate is unchanged. Full native API guides: [Android](https://github.com/even-realities/enterprise_sdk/blob/main/docs/enterprise/enterprise-android-sdk.md) and [iOS](https://github.com/even-realities/enterprise_sdk/blob/main/docs/enterprise/enterprise-ios-sdk.md).
 
 ## iOS — Swift Package Manager
 
 In Xcode, choose **File → Add Package Dependencies**, enter
-`https://github.com/even-realities/flutter_enterprise_sdk.git`, choose exact version
+`https://github.com/even-realities/enterprise_sdk.git`, choose exact version
 `0.1.0-beta.14`, and add the **EvenDevicesSDK** product to your app target.
 
 For a Swift package consumer:
 
 ```swift
 .package(
-    url: "https://github.com/even-realities/flutter_enterprise_sdk.git",
+    url: "https://github.com/even-realities/enterprise_sdk.git",
     exact: "0.1.0-beta.14"
 )
 ```
 
-Add `.product(name: "EvenDevicesSDK", package: "flutter_enterprise_sdk")` to the
+Add `.product(name: "EvenDevicesSDK", package: "enterprise_sdk")` to the
 consumer target's dependencies. The package contains a versioned local binary
 target, so Xcode downloads the framework with the Git tag. It does not need an
 external ZIP URL or download token.

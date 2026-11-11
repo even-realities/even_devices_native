@@ -6,7 +6,7 @@
 
 Android 插件通过 Gradle 从 Maven Central 固定引入 `com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14`。宿主依赖仓库需包含 `google()` 和 `mavenCentral()`；不再注入插件内的 `android/maven` 本地仓库。
 
-iOS 插件的 `ios/even_devices_native/Package.swift` 从 GitHub 精确引入 `EvenDevicesSDK` 的 `0.1.0-beta.14`，并包含桥接代码和隐私清单。最低 Flutter 3.32、iOS 15。先执行：
+iOS 插件的 `ios/even_devices_native/Package.swift` 从独立 [enterprise_sdk 仓库](https://github.com/even-realities/enterprise_sdk)精确引入 `EvenDevicesSDK` 的 `0.1.0-beta.14`，并包含桥接代码和隐私清单。最低 Flutter 3.32、iOS 15。先执行：
 
 ```bash
 fvm flutter config --enable-swift-package-manager

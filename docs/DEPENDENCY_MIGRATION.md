@@ -1,4 +1,21 @@
-# Gradle / SwiftPM dependency migration — 2026-11-10
+# Native dependency migrations
+
+## Native repository split — 2026-11-11
+
+The current iOS adapter resolves `EvenDevicesSDK` exact `0.1.0-beta.14` from
+[enterprise_sdk](https://github.com/even-realities/enterprise_sdk). Android keeps
+the same beta.14 Maven Central coordinate. Native runtime code and the original
+XCFramework ZIP are unchanged; only the SPM repository/package identity changes.
+
+The original Flutter repository tag, root `Package.swift`, ZIPs, source bundle
+and build records are retained for existing consumers and artifact audits.
+Native development and future releases now belong to the separate repository.
+See [migration and verification](NATIVE_REPOSITORY_MIGRATION.md).
+
+The record below describes the earlier dependency-manager migration and its
+verification at that time, including the **old** SPM repository/tag identities.
+
+## Gradle / SwiftPM dependency migration — 2026-11-10
 
 The independent Flutter plugin `even_devices_native` pins native SDK **0.1.0-beta.14** on both platforms. Dart APIs and native protocol implementations are unchanged by this migration.
 

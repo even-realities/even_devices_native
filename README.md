@@ -18,7 +18,9 @@ The Enterprise SDK is currently in **alpha**, with access by application. To con
 | --- | --- | --- |
 | Flutter | Add `even_devices_native` as a Git dependency. | [Flutter setup](#install-flutter) |
 | Native Android | Add `mavenCentral()` and `implementation("com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14")` to your Gradle configuration. | [Kotlin integration](docs/NATIVE_SDK.md#android--maven-central) |
-| Native iOS | In Xcode, add [this repository](https://github.com/even-realities/flutter_enterprise_sdk.git) through Swift Package Manager; select exact version `0.1.0-beta.14` and product `EvenDevicesSDK`. | [Swift integration](docs/NATIVE_SDK.md#ios--swift-package-manager) |
+| Native iOS | In Xcode, add [enterprise_sdk](https://github.com/even-realities/enterprise_sdk.git) through Swift Package Manager; select exact version `0.1.0-beta.14` and product `EvenDevicesSDK`. | [Swift integration](docs/NATIVE_SDK.md#ios--swift-package-manager) |
+
+Native source, native examples and release tooling are maintained in the dedicated [enterprise_sdk repository](https://github.com/even-realities/enterprise_sdk). Existing Flutter-repository SPM tags remain available for compatibility.
 
 ## What's included
 
@@ -146,5 +148,7 @@ Open Settings, paste your License JSON, and initialize. Scan and select your gla
 ## Documentation
 
 Start with the **[Even Enterprise documentation](https://hub.evenrealities.com/docs/enterprise/)** (coming soon). Until it goes live, use this repository's [Flutter integration reference](docs/INTEGRATION.zh-CN.md), [native SDK guide](docs/NATIVE_SDK.md), and [example app](example/README.md).
+
+[Flutter API guide](docs/enterprise/enterprise-flutter-sdk.md) · [Android guide](https://github.com/even-realities/enterprise_sdk/blob/main/docs/enterprise/enterprise-android-sdk.md) · [iOS guide](https://github.com/even-realities/enterprise_sdk/blob/main/docs/enterprise/enterprise-ios-sdk.md)
 
 [Validation status](docs/VALIDATION.md) · [Native artifact provenance](PROVENANCE.md) · [Apache 2.0 license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md)

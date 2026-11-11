@@ -35,7 +35,9 @@ for name, digest in expected.items():
     assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, f'Hash mismatch: {name}'
 
 # Maven metadata/sidecars must describe the very AAR that ships inside this package.
-# The adapters pin the same immutable native release through Maven Central and SPM.
+# The adapters pin the same immutable native release through Maven Central and
+# the standalone native repository. Root Package.swift remains the legacy archive
+# and is independently hash-checked above, never a dependency of this adapter.
 assert f'even-devices-native-android:{version}"' in Path('android/build.gradle').read_text()
 gradle = Path('android/build.gradle').read_text()
 assert 'mavenCentral()' in gradle
@@ -44,10 +46,10 @@ manifest = Path('ios/even_devices_native/Package.swift')
 package = json.loads(subprocess.check_output(
     ['swift', 'package', '--package-path', str(manifest.parent), 'dump-package'], text=True))
 remote = package['dependencies'][0]['sourceControl'][0]
-assert remote['location']['remote'][0]['urlString'] == 'https://github.com/even-realities/flutter_enterprise_sdk.git'
+assert remote['location']['remote'][0]['urlString'] == 'https://github.com/even-realities/enterprise_sdk.git'
 assert remote['requirement']['exact'] == [version]
 assert package['products'][0]['name'] == 'even-devices-native'
-assert package['targets'][0]['dependencies'][0]['product'][:2] == ['EvenDevicesSDK', 'flutter_enterprise_sdk']
+assert package['targets'][0]['dependencies'][0]['product'][:2] == ['EvenDevicesSDK', 'enterprise_sdk']
 assert Path('ios/even_devices_native/Sources/even_devices_native/PrivacyInfo.xcprivacy').is_file()
 assert not Path('ios/even_devices_native.podspec').exists(), 'Unexpected CocoaPods fallback'
 base = Path('android/maven/com/evenrealities/devices/even-devices-native-android') / version

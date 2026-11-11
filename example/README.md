@@ -4,7 +4,7 @@
 
 ## 原生依赖
 
-Android 使用 Maven Central 的 beta.14，iOS 使用 SPM 的同版本 SDK。运行 iOS 前执行 `fvm flutter config --enable-swift-package-manager`；也可在构建命令前添加 `FLUTTER_SWIFT_PACKAGE_MANAGER=true`。示例已移除 CocoaPods 集成，详见[依赖迁移记录](../docs/DEPENDENCY_MIGRATION.md)。
+Android 使用 Maven Central 的 beta.14，iOS 使用独立 [enterprise_sdk 仓库](https://github.com/even-realities/enterprise_sdk)通过 SPM 发布的同版本 SDK。运行 iOS 前执行 `fvm flutter config --enable-swift-package-manager`；也可在构建命令前添加 `FLUTTER_SWIFT_PACKAGE_MANAGER=true`。示例已移除 CocoaPods 集成，详见[依赖迁移记录](../docs/DEPENDENCY_MIGRATION.md)。
 
 ```bash
 fvm flutter pub get
@@ -31,7 +31,7 @@ fvm flutter run -d <device-id> --dart-define-from-file=/absolute/path/local-conf
 
 配置文件结构为 `{"EVEN_ENTERPRISE_LICENSE_JSON":"<完整 JSON 字符串>"}`。示例不携带真实签名、平台账号或私钥，日志不打印 license 和原始业务 payload。宿主 applicationId 与签名使用的 `app_id` 由接入方确认；不要改写签名中的 app_id。
 
-Android 示例固定 compileSdk 36 / NDK 27.0.12077973；iOS 最低 15.0，已添加蓝牙用途说明。示例 UI 演示连接、时间同步和 EvenHub 文字页；其余 EvenHub 指令可通过插件公共 API 接入。不包含 R1、通知和 OTA 演示。
+Android 示例固定 compileSdk 36 / NDK 27.0.12077973；iOS 最低 15.0，已添加蓝牙用途说明。示例 UI 演示连接、时间同步和 EvenHub 文字页；其余 EvenHub 指令可通过插件公共 API 接入。不包含 R1 或通知演示。
 
 EvenHub 的编码、命令应答、图片分包、页面心跳和事件解析均在原生 SDK。示例只提交文字与展示原生事件，不持有业务定时器或协议状态机。
 

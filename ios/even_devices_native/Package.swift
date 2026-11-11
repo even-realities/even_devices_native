@@ -3,6 +3,7 @@ import PackageDescription
 
 // Keep the Flutter adapter separate from the Flutter-free binary SDK. Pin the
 // same release as Android so each host receives identical protocol capabilities.
+// The native repository owns source, binary tags and publishing independently.
 let package = Package(
     name: "even_devices_native",
     platforms: [.iOS(.v15)],
@@ -11,7 +12,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/even-realities/flutter_enterprise_sdk.git",
+            url: "https://github.com/even-realities/enterprise_sdk.git",
             exact: "0.1.0-beta.14"
         ),
     ],
@@ -19,7 +20,7 @@ let package = Package(
         .target(
             name: "even_devices_native",
             dependencies: [
-                .product(name: "EvenDevicesSDK", package: "flutter_enterprise_sdk"),
+                .product(name: "EvenDevicesSDK", package: "enterprise_sdk"),
             ],
             resources: [.process("PrivacyInfo.xcprivacy")]
         ),

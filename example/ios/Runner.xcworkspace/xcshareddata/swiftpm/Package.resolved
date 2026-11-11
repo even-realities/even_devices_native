@@ -2,11 +2,11 @@
   "originHash" : "74bfe26db151d0bf71fa1f38de3f429ea86dd642d81be3bc3d6f9721fe636fc2",
   "pins" : [
     {
-      "identity" : "flutter_enterprise_sdk",
+      "identity" : "enterprise_sdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/even-realities/flutter_enterprise_sdk.git",
+      "location" : "https://github.com/even-realities/enterprise_sdk.git",
       "state" : {
-        "revision" : "9dfd89047e1f1c97f5d4885c21b89e34f5f1b009",
+        "revision" : "278aa6c893f17ac58a4d3987bd8f5311a6988144",
         "version" : "0.1.0-beta.14"
       }
     }

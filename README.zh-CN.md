@@ -18,7 +18,9 @@ Enterprise SDK 当前处于 **alpha 申请阶段**。要让自己的应用连接
 | --- | --- | --- |
 | Flutter | 通过 Git 依赖引入 `even_devices_native`。 | [Flutter 安装](#安装-flutter) |
 | 原生 Android | 在 Gradle 中添加 `mavenCentral()` 和 `implementation("com.evenrealities.devices:even-devices-native-android:0.1.0-beta.14")`。 | [Kotlin 接入](docs/NATIVE_SDK.md#android--maven-central) |
-| 原生 iOS | 在 Xcode 中通过 Swift Package Manager 添加[本仓库](https://github.com/even-realities/flutter_enterprise_sdk.git)，选择精确版本 `0.1.0-beta.14` 和 `EvenDevicesSDK` product。 | [Swift 接入](docs/NATIVE_SDK.md#ios--swift-package-manager) |
+| 原生 iOS | 在 Xcode 中通过 Swift Package Manager 添加[enterprise_sdk 仓库](https://github.com/even-realities/enterprise_sdk.git)，选择精确版本 `0.1.0-beta.14` 和 `EvenDevicesSDK` product。 | [Swift 接入](docs/NATIVE_SDK.md#ios--swift-package-manager) |
+
+原生源码、原生示例和发布脚本在独立的 [enterprise_sdk 仓库](https://github.com/even-realities/enterprise_sdk)维护。Flutter 仓库原有 SPM tag 继续保留供现有项目使用。
 
 ## 插件内容
 
@@ -145,5 +147,7 @@ fvm flutter run
 ## 官方文档
 
 从 **[Even Enterprise 文档](https://hub.evenrealities.com/docs/enterprise/)**开始（即将上线）。上线前可先参考本仓库的 [Flutter 接入参考](docs/INTEGRATION.zh-CN.md)、[原生 SDK 指南](docs/NATIVE_SDK.md)和[示例应用](example/README.md)。
+
+[Flutter 完整接口](docs/enterprise/enterprise-flutter-sdk.md) · [Android 接入](https://github.com/even-realities/enterprise_sdk/blob/main/docs/enterprise/enterprise-android-sdk.md) · [iOS 接入](https://github.com/even-realities/enterprise_sdk/blob/main/docs/enterprise/enterprise-ios-sdk.md)
 
 [验证状态](docs/VALIDATION.md) · [原生产物来源](PROVENANCE.md) · [Apache 2.0 许可证](LICENSE) · [第三方许可](THIRD_PARTY_NOTICES.md)
